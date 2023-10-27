@@ -184,3 +184,30 @@ class TitleText extends GameObject {
         ctx.fillText("はじめる", screen.getX(900 / 3), screen.getY(1300));
     }
 }
+
+class WaitText extends GameObject {
+    constructor(){
+        super()
+        this.txt = "..."
+        this.count = 0;
+    }
+    draw(ctx, screen) {
+        this.count ++;
+        if (this.count > 30) {
+            this.count = 0;
+            this.txt = Array(1 + (this.txt.length+1)%4).join("."); 
+        }
+        ctx.fillStyle = "green";
+        ctx.font = `bold ${screen.getX(900 / 8)}px selif `;
+        ctx.fillText("対戦相手を", 0, screen.getY(1000));
+        ctx.fillText("探しています" + this.txt, 0, screen.getY(1100));
+    }
+}
+
+class testText extends GameObject {
+    draw(ctx, screen) {
+        ctx.fillStyle = "red";
+        ctx.font = `bold ${screen.getX(900 / 8)}px selif `;
+        ctx.fillText("対戦相手を発見", 0, screen.getY(1000));
+    }
+}

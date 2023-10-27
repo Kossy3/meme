@@ -1,11 +1,49 @@
 'use strict';
 
+let screen;
+let assets;
+let socket;
+let inviting = false;
+let inGame = false;
+let myid;
+
 window.onload = () => {
-    screen = new Screen();
-    let assets = new Assets();
+    socket = io.connect("https://memeserver.kossy3.repl.co/", { withCredentials: true });
     
+    socket.on('login', (id) => {
+        myid = id;
+        socket.emit('login', "test");
+    });
+    socket.on('invite', (id) => {
+        console.log(id != myid)
+        if (inviting && id != myid) {
+            socket.emit('accept', id);
+            inviting = false;
+            screen.setScene(createGameScene())
+        }
+    });
+    socket.on('choose', () => {
+        inviting = false;
+        screen.setScene(createGameScene())  
+        inGame = true;
+    });
+    socket.on("hello", (message) => {
+        console.log(message);
+    });
+    socket.on("txt", (message) => {
+        txt.innerHTML = message;
+    });
+    socket.on("result", (data) => {
+        txt.innerHTML = data.message;
+        if (data.end == "end") {
+            inGame = false;
+        };
+    });
+    assets = new Assets();
+
     assets.onLoadAll(() => {
-        let titleScene = createTitleScene(assets);
+        screen = new Screen();
+        let titleScene = createTitleScene();
         screen.setScene(titleScene);
         screen.draw();
     });
