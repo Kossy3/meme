@@ -30,6 +30,7 @@ window.onload = () => {
         if (game.inviting) {
             game.inviting = false;
             game.playing = true;
+            game.reset();
             screen.setScene(new GameScene());
 
         }
@@ -51,17 +52,52 @@ window.onload = () => {
         if (data.end) {
             game.playing = false;
             game.inviting = false;
-            screen.setScene(new EndScene(data.message))
-        } else {
-            game.mylife = data.you.life;
-            game.enemylife = data.enemy.life;
-            if (data.you.act == "call") {
-                let meme = new Meme(new Rect(900, 800, 200, 200), true)
-                screen.scene.addGameObject(meme);
-                game.meme.push(meme);
-            } 
+            setTimeout(() => { screen.setScene(new EndScene(data.message)) }, 3000);
+
         }
 
+        if (data.you.act == "call") {
+            let meme = new Meme(new Rect(900, 800, 200, 200), true)
+            screen.scene.addGameObject(meme);
+            game.player.meme.push(meme);
+        }
+        if (data.enemy.act == "call") {
+            let meme = new Meme(new Rect(900, 200, 200, 200), false)
+            screen.scene.addGameObject(meme);
+            game.enemy.meme.push(meme);
+        }
+        if (data.you.act == "atk") {
+            game.player.atk(1);
+        }
+        if (data.enemy.act == "atk") {
+            game.enemy.atk(1);
+        }
+        if (data.you.act == "spAtk") {
+            game.player.atk(3);
+        }
+        if (data.enemy.act == "spAtk") {
+            game.enemy.atk(3);
+        }
+        if (data.you.act == "dfn") {
+            game.player.dfn();
+        }
+        if (data.enemy.act == "dfn") {
+            game.enemy.dfn();
+        }
+        if (game.player.life > data.you.life) {
+            game.player.damage();
+        }
+        if (game.enemy.life > data.enemy.life) {
+            game.enemy.damage();
+        }
+
+        game.player.life = data.you.life;
+        game.enemy.life = data.enemy.life;
     });
+
+    socket.io.on("error", (error) => {
+        alert("接続エラーが発生しました。");
+        window.reload();
+      });
 }
 

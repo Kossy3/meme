@@ -159,11 +159,17 @@ class GameScene extends Scene {
             console.log(game.acts[i]);
             this.addGameObject(new ActionButton(new Rect(300 * (i%3), 1200 + 150 * Math.floor(i / 3), 300, 150), btnImage, game.acts[i]));
         }
-        for (let i = 0; i < game.mylife; i++) {
-            this.addGameObject(new Banana(new Rect(100 * (i%9), 1100 + 100 * Math.floor(i / 9), 100, 100)));
+        game.player.banana.splice(0)
+        for (let i = 0; i < game.player.life; i++) {
+            const banana = new Banana(new Rect(100 * (i%9), 1100 + 100 * Math.floor(i / 9), 100, 100));
+            this.addGameObject(banana);
+            game.player.banana.push(banana);
         }
-        for (let i = 0; i < game.enemylife; i++) {
-            this.addGameObject(new Banana(new Rect(800 - 100 * (i%9), 0 + 100 * Math.floor(i / 9), 100, 100)));
+        game.enemy.banana.splice(0)
+        for (let i = 0; i < game.enemy.life; i++) {
+            const banana = new Banana(new Rect(800 - 100 * (i%9), 0 + 100 * Math.floor(i / 9), 100, 100))
+            this.addGameObject(banana);
+            game.enemy.banana.push(banana)
         }
     }
 }
@@ -238,13 +244,27 @@ class Banana extends Sprite {
         const bananaImage = new Texture(new Rect(0, 0, 16, 16), assets.banana);
         super(rect, bananaImage)
         this.turn = game.turn;
+        this._damaged = 0;
     }
     update() {
         if (game.turn!= this.turn) {
-
-            console.log("des")
             this.dispatchEvent("destroy", new GameEvent(this));
         }
+    }
+    render(screen) {
+        if (this._damaged > 0) {
+            if (this._damaged%10 < 5) {
+                super.render(screen);
+                
+            }
+            this._damaged ++;
+        } else {
+            super.render(screen);
+        }
+    }
+    damage() {
+        this._damaged = 1;
+        console.log("nana")
     }
 }
 
@@ -252,28 +272,68 @@ class Meme extends Sprite {
     constructor(rect, myMeme) {
         const memeImage = new Texture(new Rect(0, 0, 64, 64), assets.meme);
         super(rect, memeImage)
-        this.vecX = 0;
-        this.vecY = 0;
-        this.myMeme = myMeme;
-        this.count = 0;
-        this.speed = 2;
+        this._vecX = 0;
+        this._vecY = 0;
+        this._myMeme = myMeme;
+        this._initcnt = 0;
+        this._speed = 2;
+        this._atkcnt = 0;
+        this._dfncnt = 0;
+    }
+    atk() {
+        this._atkcnt = 1;
+    }
+    dfn() {
+        this._dfncnt = 1;
     }
     update(screen) {
-        if (this.count < 150) {
-            this.count ++;
-            this.x -= this.speed;
+        if (this._initcnt < 150) {
+            this._initcnt ++;
+            this.x -= this._speed;
             return
         }
-        if (Math.random() * 30 < 1) {
-            this.vecX = Math.floor(Math.random() * 3) - 1;
-            this.vecY = Math.floor(Math.random() * 3) - 1;
+        if (this._atkcnt > 0) {
+            if (this._myMeme) {
+                this.y += (0 - this.y) / (60 - this._atkcnt);;
+                this.x += (700 - this.x) / (60 - this._atkcnt);
+            } else {
+                this.y += (1000 - this.y) / (60 - this._atkcnt);
+                this.x += (0 - this.x) / (60 - this._atkcnt);
+            }
+            this._atkcnt ++;
+            if (this._atkcnt == 60) {
+                this.dispatchEvent("destroy", new GameEvent(this));
+            }
+            return;
         }
-        this.x += this.vecX * this.speed;
-        this.y += this.vecY * this.speed;
+        if (this._dfncnt > 0) {
+            this.texture = new Texture(new Rect(0, 0, 64, 64), assets.kushon)
+            if (this._myMeme) {
+                this.y += (1000 - this.y) / (60 - this._dfncnt);
+                this.x += (0 - this.x) / (60 - this._dfncnt);
+            } else {
+                this.y += (0 - this.y) / (60 - this._dfncnt);;
+                this.x += (700 - this.x) / (60 - this._dfncnt);
+            }
+            this._dfncnt ++;
+            if (this._dfncnt == 60) {
+                setTimeout(()=>{
+                    this.texture = new Texture(new Rect(0, 0, 64, 64), assets.meme);
+                }, 2000);
+                this._dfncnt = 0;
+            }
+            return;
+        }
+        if (Math.random() * 30 < 1) {
+            this._vecX = Math.floor(Math.random() * 3) - 1;
+            this._vecY = Math.floor(Math.random() * 3) - 1;
+        }
+        this.x += this._vecX * this._speed;
+        this.y += this._vecY * this._speed;
         this.x = Math.min(Math.max(this.x, 0), 900 - 200);
         let maxY;
         let minY;
-        if (this.myMeme) {
+        if (this._myMeme) {
             maxY = 1200 - 200;
             minY = 600;
         } else {
