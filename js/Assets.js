@@ -21,11 +21,13 @@ class Assets {
                 }
             }
         }
-        new Asset('./data/me.png', "img", callback("me"))
-        new Asset('./data/sogen.png', "img", callback("sogen"))
-        new Asset('./data/kushon.png', "img", callback("kushon"))
-        new Asset('./data/button.png', "img", callback("button"))
-        new Asset('./data/tekito.mid', "mid", callback("bgm1"))
+        new Asset('./data/me.png', "img", callback("meme"));
+        new Asset('./data/saku.png', "img", callback("saku"));
+        new Asset('./data/banana.png', "img", callback("banana"));
+        new Asset('./data/sogen.png', "img", callback("sogen"));
+        new Asset('./data/kushon.png', "img", callback("kushon"));
+        new Asset('./data/button.png', "img", callback("button"));
+        new Asset('./data/tekito.mid', "mid", callback("bgm1"));
     }
 
     onLoadAll(callback) {

@@ -3,7 +3,8 @@
 class Screen {
     constructor() {
         this._content = document.getElementById("content");
-        this.c = document.getElementById('view');
+        this._c = document.getElementById('view');
+        this.ctx;
         this.w = 900;
         this.h = 1600;
         this.maxFps = 30;
@@ -17,7 +18,7 @@ class Screen {
         window.addEventListener("mouseup", e => {
             this.scene.dispatchEvent("mouseup", new GameEvent(this, e));
         }, false);
-        window.addEventListener("touchstart", e=> {
+        window.addEventListener("touchstart", e => {
             this.scene.dispatchEvent("touchstart", new GameEvent(this, e));
         }, false);
         window.addEventListener("touchend", e => {
@@ -25,28 +26,29 @@ class Screen {
         }, false);
     }
     getX(x) {
-        return x / this.w * this.c.width;
+        return x / this.w * this._c.width;
     }
     getY(y) {
-        return y / this.h * this.c.height;
+        return y / this.h * this._c.height;
     }
     _resize() {
-        this.c.width = this._content.clientWidth;
-        this.c.height = this._content.clientHeight;
+        this._c.width = this._content.clientWidth;
+        this._c.height = this._content.clientHeight;
     }
     setScene(scene) {
         this.scene = scene;
     }
     _render(timestamp) {
         const elapsedSec = (timestamp - this._prevTimestamp) / 1000;
-        const accuracy = 0.9; 
+        const accuracy = 0.9;
         const frameTime = 1 / this.maxFps * accuracy;
-        if(elapsedSec <= frameTime) {
+        if (elapsedSec <= frameTime) {
             requestAnimationFrame(this._render.bind(this));
             return;
         }
         this._resize();
-        const ctx = this.c.getContext('2d');
+        const ctx = this._c.getContext('2d');
+        this.ctx = ctx;
         // context setting
         ctx.mozImageSmoothingEnabled = false;
         ctx.webkitImageSmoothingEnabled = false;
@@ -63,7 +65,7 @@ class GameEventDispatcher {
     }
 
     addEventListener(type, callback) {
-        if(this._eventListeners[type] == undefined) {
+        if (this._eventListeners[type] == undefined) {
             this._eventListeners[type] = [];
         }
 
@@ -72,12 +74,12 @@ class GameEventDispatcher {
 
     dispatchEvent(type, event) {
         const listeners = this._eventListeners[type];
-        if(listeners != undefined) listeners.forEach((callback) => callback(event));
+        if (listeners != undefined) listeners.forEach((callback) => callback(event));
     }
 }
 
 class GameEvent {
-    constructor(target, e=null) {
+    constructor(target, e = null) {
         this.target = target;
         this.e = e;
     }
@@ -88,38 +90,38 @@ class Scene extends GameEventDispatcher {
         super()
         this.gameobjects = [];
         this.addEventListener("mousedown", event => {
-            this._mouseEvent(event.e, 
+            this._mouseEvent(event.e,
                 event.e.clientX,
-                event.e.clientY,  
-                event.target, (gameobject) => {gameobject.mousedown();});
+                event.e.clientY,
+                event.target, (gameobject) => { gameobject.mousedown(); });
         }, false);
         this.addEventListener("mouseup", event => {
-            this._mouseEvent(event.e, 
+            this._mouseEvent(event.e,
                 event.e.clientX,
-                event.e.clientY, 
-                event.target, (gameobject) => {gameobject.mouseup();});
+                event.e.clientY,
+                event.target, (gameobject) => { gameobject.mouseup(); });
         }, false);
-        this.addEventListener("touchstart", event=> {
-            this._mouseEvent(event.e, 
+        this.addEventListener("touchstart", event => {
+            this._mouseEvent(event.e,
                 event.e.touches[0].pageX,
-                event.e.touches[0].pageY, 
-                event.target, (gameobject) => {gameobject.touchstart();});
+                event.e.touches[0].pageY,
+                event.target, (gameobject) => { gameobject.touchstart(); });
         }, false);
         this.addEventListener("touchend", event => {
-            this._mouseEvent(event.e, 
+            this._mouseEvent(event.e,
                 event.e.changedTouches[0].pageX,
-                event.e.changedTouches[0].pageY, 
-                event.target, (gameobject) => {gameobject.touchend();});
+                event.e.changedTouches[0].pageY,
+                event.target, (gameobject) => { gameobject.touchend(); });
         }, false);
     }
     addGameObject(gameobject) {
         this.gameobjects.push(gameobject);
-        gameobject.addEventListener('destroy', (e)=>{
+        gameobject.addEventListener('destroy', (e) => {
             this.removeGameObject(e.target);
         })
     }
     removeGameObject(gameobject) {
-        const index = this.actors.indexOf(actor);
+        const index = this.gameobjects.indexOf(gameobject);
         this.gameobjects.splice(index, 1);
     }
     update(screen) {
@@ -167,22 +169,20 @@ class GameObject extends GameEventDispatcher {
         this.y = y;
     }
 
-    update(gameInfo, input) {}
-
-    render(ctx) {}
-
-    mousedown(){}
-    mouseup(){}
-    touchstart(){}
-    touchend(){}
-    clickcancel(){}
-    destroy() {
+    update(screen) { }
+    render(screen) { }
+    mousedown() { }
+    mouseup() { }
+    touchstart() { }
+    touchend() { }
+    clickcancel() { }
+    _destroy() {
         this.dispatchEvent('destroy', new GameEvent(this));
     }
 }
 
-class Texture  {
-    constructor(image, rect) {
+class Texture {
+    constructor(rect, image) {
         this.image = image;
         this.rect = rect;
     }
@@ -195,9 +195,9 @@ class Sprite extends GameObject {
         this.w = rect.w;
         this.h = rect.h;
     }
-    
+
     render(screen) {
-        const ctx = screen.c.getContext('2d');
+        const ctx = screen.ctx;
         const rect = this.texture.rect;
         ctx.drawImage(this.texture.image,
             rect.x, rect.y,
@@ -207,52 +207,56 @@ class Sprite extends GameObject {
     }
 }
 
-class Button extends Sprite{
-    constructor(rect, texture) {
+class Button extends Sprite {
+    constructor(rect, texture, text) {
         super(rect, texture);
+        this.text = text;
         this.ismousedown = false;
         this.istouchstart = false;
     }
-    mousedown(){
+    mousedown() {
         this.ismousedown = true;
-        console.log("down")
+        //console.log("down")
     }
     mouseup() {
         if (this.ismousedown) {
             this.dispatchEvent("click", new GameEvent(this));
             this.ismousedown = false;
-            console.log("up")
+            //console.log("up")
         }
     }
     touchstart() {
         this.istouchstart = true;
     }
-    touchend () {
+    touchend() {
         if (this.istouchstart) {
             this.dispatchEvent("click", new GameEvent(this));
             this.istouchstart = false;
         }
     }
-    clickcancel () {
+    clickcancel() {
         this.ismousedown = false;
         this.istouchstart = false;
-        console.log("cancel")
+        //console.log("cancel")
     }
 
     render(screen) {
-        const ctx = screen.c.getContext('2d');
+        const ctx = screen.ctx;
         ctx.shadowColor = "rgba(0,0,0,0.3)";
-        console.log(this.ismousedown)
         if (this.istouchstart || this.ismousedown) {
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
         } else {
             ctx.shadowOffsetX = 3;
             ctx.shadowOffsetY = 3;
-        }   
+        }
         super.render(screen);
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 0;
+        ctx.fillStyle = "green";
+        const px = Math.min(Math.max(screen.getX(this.w / this.text.length), screen.getX(16)));
+        ctx.font = `bold ${px}px さわらび明朝 `;
+        ctx.fillText(this.text, screen.getX(this.x), screen.getY(this.y + px / 2 + this.h / 2), this.w);
     }
 }
 
