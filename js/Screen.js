@@ -88,16 +88,28 @@ class Scene extends GameEventDispatcher {
         super()
         this.gameobjects = [];
         this.addEventListener("mousedown", event => {
-            this._mouseEvent(event.e, event.target, (gameobject) => {gameobject.mousedown();});
+            this._mouseEvent(event.e, 
+                event.e.clientX,
+                event.e.clientY,  
+                event.target, (gameobject) => {gameobject.mousedown();});
         }, false);
         this.addEventListener("mouseup", event => {
-            this._mouseEvent(event.e, event.target, (gameobject) => {gameobject.mouseup();});
+            this._mouseEvent(event.e, 
+                event.e.clientX,
+                event.e.clientY, 
+                event.target, (gameobject) => {gameobject.mouseup();});
         }, false);
         this.addEventListener("touchstart", event=> {
-            this._mouseEvent(event.e, event.target, (gameobject) => {gameobject.touchstart();});
+            this._mouseEvent(event.e, 
+                event.e.touches[0].pageX,
+                event.e.touches[0].pageY, 
+                event.target, (gameobject) => {gameobject.touchstart();});
         }, false);
         this.addEventListener("touchend", event => {
-            this._mouseEvent(event.e, event.target, (gameobject) => {gameobject.touchend();});
+            this._mouseEvent(event.e, 
+                event.e.touches[0].pageX,
+                event.e.touches[0].pageY, 
+                event.target, (gameobject) => {gameobject.touchend();});
         }, false);
     }
     addGameObject(gameobject) {
@@ -125,10 +137,10 @@ class Scene extends GameEventDispatcher {
         };
     }
 
-    _mouseEvent(e, screen, callback) {
+    _mouseEvent(e, clientX, clientY, screen, callback) {
         let sc = e.target.getBoundingClientRect();
-        let mouseX = e.clientX - sc.left;
-        let mouseY = e.clientY - sc.top;
+        let mouseX = clientX - sc.left;
+        let mouseY = clientY - sc.top;
         let isCallback = false; // 一番上のオブジェクトのみ発火させたい
         for (let i = this.gameobjects.length - 1; i >= 0; i--) {
             let gameobject = this.gameobjects[i];
