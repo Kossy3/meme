@@ -107,8 +107,8 @@ class Scene extends GameEventDispatcher {
         }, false);
         this.addEventListener("touchend", event => {
             this._mouseEvent(event.e, 
-                event.e.touches[0].pageX,
-                event.e.touches[0].pageY, 
+                event.e.changedTouches[0].pageX,
+                event.e.changedTouches[0].pageY, 
                 event.target, (gameobject) => {gameobject.touchend();});
         }, false);
     }
