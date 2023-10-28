@@ -93,8 +93,11 @@ window.onload = () => {
 
         game.player.life = data.you.life;
         game.enemy.life = data.enemy.life;
-
-
     });
+
+    socket.io.on("error", (error) => {
+        alert("接続エラーが発生しました。");
+        window.reload();
+      });
 }
 
