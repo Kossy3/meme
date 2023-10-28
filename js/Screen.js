@@ -2,15 +2,27 @@
 
 class Screen {
     constructor() {
-        this.content = document.getElementById("content");
+        this._content = document.getElementById("content");
         this.c = document.getElementById('view');
         this.w = 900;
         this.h = 1600;
+        this.maxFps = 30;
+        this.currentFps = 0;
         this.scene = new Scene();
-        this.c.addEventListener("click", e => this.scene.onclick(e, this), false);
-        this.c.addEventListener("mousedown", e => this.scene.onmousedown(e, this), false);
-        window.addEventListener("mouseup", e => this.scene.onmouseup(e, this), false);
-        setInterval(() => {this.draw()}, 1);
+        this._prevTimestamp = 0;
+        requestAnimationFrame(this._render.bind(this));
+        window.addEventListener("mousedown", e => {
+            this.scene.dispatchEvent("mousedown", new GameEvent(this, e));
+        }, false);
+        window.addEventListener("mouseup", e => {
+            this.scene.dispatchEvent("mouseup", new GameEvent(this, e));
+        }, false);
+        window.addEventListener("touchstart", e=> {
+            this.scene.dispatchEvent("touchstart", new GameEvent(this, e));
+        }, false);
+        window.addEventListener("touchend", e => {
+            this.scene.dispatchEvent("touchend", new GameEvent(this, e));
+        }, false);
     }
     getX(x) {
         return x / this.w * this.c.width;
@@ -18,196 +30,227 @@ class Screen {
     getY(y) {
         return y / this.h * this.c.height;
     }
-    resize() {
-        this.c.width = this.content.clientWidth;
-        this.c.height = this.content.clientHeight;
+    _resize() {
+        this.c.width = this._content.clientWidth;
+        this.c.height = this._content.clientHeight;
     }
     setScene(scene) {
         this.scene = scene;
     }
-    draw() {
-        this.resize();
-        let ctx = this.c.getContext('2d');
+    _render(timestamp) {
+        const elapsedSec = (timestamp - this._prevTimestamp) / 1000;
+        const accuracy = 0.9; 
+        const frameTime = 1 / this.maxFps * accuracy;
+        if(elapsedSec <= frameTime) {
+            requestAnimationFrame(this._render.bind(this));
+            return;
+        }
+        this._resize();
+        const ctx = this.c.getContext('2d');
         // context setting
         ctx.mozImageSmoothingEnabled = false;
         ctx.webkitImageSmoothingEnabled = false;
         ctx.msImageSmoothingEnabled = false;
         ctx.imageSmoothingEnabled = false;
-        this.scene.draw(ctx, this);
+        this.scene.update(this);
+        requestAnimationFrame(this._render.bind(this));
     }
 }
-class Scene {
+
+class GameEventDispatcher {
     constructor() {
-        this.gameobjects = new Array();
+        this._eventListeners = {};
     }
-    addObject(gameobject) {
+
+    addEventListener(type, callback) {
+        if(this._eventListeners[type] == undefined) {
+            this._eventListeners[type] = [];
+        }
+
+        this._eventListeners[type].push(callback);
+    }
+
+    dispatchEvent(type, event) {
+        const listeners = this._eventListeners[type];
+        if(listeners != undefined) listeners.forEach((callback) => callback(event));
+    }
+}
+
+class GameEvent {
+    constructor(target, e=null) {
+        this.target = target;
+        this.e = e;
+    }
+}
+
+class Scene extends GameEventDispatcher {
+    constructor() {
+        super()
+        this.gameobjects = [];
+        this.addEventListener("mousedown", event => {
+            this._mouseEvent(event.e, event.target, (gameobject) => {gameobject.mousedown();});
+        }, false);
+        this.addEventListener("mouseup", event => {
+            this._mouseEvent(event.e, event.target, (gameobject) => {gameobject.mouseup();});
+        }, false);
+        this.addEventListener("touchstart", event=> {
+            this._mouseEvent(event.e, event.target, (gameobject) => {gameobject.touchstart();});
+        }, false);
+        this.addEventListener("touchend", event => {
+            this._mouseEvent(event.e, event.target, (gameobject) => {gameobject.touchend();});
+        }, false);
+    }
+    addGameObject(gameobject) {
         this.gameobjects.push(gameobject);
+        gameobject.addEventListener('destroy', (e)=>{
+            this.removeGameObject(e.target);
+        })
     }
-    draw(ctx, screen) {
+    removeGameObject(gameobject) {
+        const index = this.actors.indexOf(actor);
+        this.gameobjects.splice(index, 1);
+    }
+    update(screen) {
+        this._updateAll(screen);
+        this._renderAll(screen);
+    }
+    _updateAll(screen) {
+        this.gameobjects.forEach((gameobject) => {
+            gameobject.update(screen)
+        });
+    }
+    _renderAll(screen) {
         for (let i = 0; i < this.gameobjects.length; i++) {
-            this.gameobjects[i].draw(ctx, screen);
+            this.gameobjects[i].render(screen);
         };
     }
-    mouseEvent(e, screen, callback) {
+
+    _mouseEvent(e, screen, callback) {
         let sc = e.target.getBoundingClientRect();
         let mouseX = e.clientX - sc.left;
         let mouseY = e.clientY - sc.top;
+        let isCallback = false; // 一番上のオブジェクトのみ発火させたい
         for (let i = this.gameobjects.length - 1; i >= 0; i--) {
             let gameobject = this.gameobjects[i];
-            if (!gameobject.config) { continue; }
-            let x = screen.getX(gameobject.config.dx);
-            let y = screen.getY(gameobject.config.dy);
-            let w = screen.getX(gameobject.config.dw);
-            let h = screen.getY(gameobject.config.dh);
-            if (x < mouseX && mouseX < x + w) {
+            let x = screen.getX(gameobject.x);
+            let y = screen.getY(gameobject.y);
+            let w = screen.getX(gameobject.w);
+            let h = screen.getY(gameobject.h);
+            if (x < mouseX && mouseX < x + w && !isCallback) {
                 if (y < mouseY && mouseY < y + h) {
-                    callback(gameobject, e)
-                    break;
+                    callback(gameobject)
+                    isCallback == true;
+                    continue;
                 }
             }
-        }
-    }
-    onclick(e, screen) {
-        this.mouseEvent(e, screen, (gameobject, e) => {gameobject.onclick(e)});
-    }
-
-    onmousedown(e, screen) {
-        this.mouseEvent(e, screen, (gameobject, e) => {gameobject.onmousedown(e)});
-    }
-    onmouseup(e, screen) {
-        for (let i = this.gameobjects.length - 1; i >= 0; i--) {
-            let gameobject = this.gameobjects[i];
-            gameobject.onmouseup(e);
+            gameobject.clickcancel()
         }
     }
 }
 
-class GameObject {
-    draw(){}
-    onclick(){}
-    onmousedown(){}
-    onmouseup(){}
-}
+class GameObject extends GameEventDispatcher {
+    constructor(x, y) {
+        super();
+        this.x = x;
+        this.y = y;
+    }
 
-class Label extends GameObject{
-    constructor(text, config) {
-        this.text = text;
-        this.config = image2d.config;
+    update(gameInfo, input) {}
+
+    render(ctx) {}
+
+    mousedown(){}
+    mouseup(){}
+    touchstart(){}
+    touchend(){}
+    clickcancel(){}
+    destroy() {
+        this.dispatchEvent('destroy', new GameEvent(this));
     }
 }
 
-class Button extends GameObject{
-    constructor(callback, image2d) {
-        super()
-        this.shadow = true;
-        this.onclick = callback;
-        this.onmousedown = () => {
-            this.shadow = false;
-        }
-        this.onmouseup = () => {
-            this.shadow = true;
-        }
-        this.image2d = image2d;
-        this.config = image2d.config;
+class Texture  {
+    constructor(image, rect) {
+        this.image = image;
+        this.rect = rect;
     }
-    draw(ctx, screen) {
+}
+
+class Sprite extends GameObject {
+    constructor(rect, texture) {
+        super(rect.x, rect.y);
+        this.texture = texture;
+        this.w = rect.w;
+        this.h = rect.h;
+    }
+    
+    render(screen) {
+        const ctx = screen.c.getContext('2d');
+        const rect = this.texture.rect;
+        ctx.drawImage(this.texture.image,
+            rect.x, rect.y,
+            rect.w, rect.h,
+            screen.getX(this.x), screen.getY(this.y),
+            screen.getX(this.w), screen.getY(this.h));
+    }
+}
+
+class Button extends Sprite{
+    constructor(rect, texture) {
+        super(rect, texture);
+        this.ismousedown = false;
+        this.istouchstart = false;
+    }
+    mousedown(){
+        this.ismousedown = true;
+        console.log("down")
+    }
+    mouseup() {
+        if (this.ismousedown) {
+            this.dispatchEvent("click", new GameEvent(this));
+            this.ismousedown = false;
+            console.log("up")
+        }
+    }
+    touchstart() {
+        this.istouchstart = true;
+    }
+    touchend () {
+        if (this.istouchstart) {
+            this.dispatchEvent("click", new GameEvent(this));
+            this.istouchstart = false;
+        }
+    }
+    clickcancel () {
+        this.ismousedown = false;
+        this.istouchstart = false;
+        console.log("cancel")
+    }
+
+    render(screen) {
+        const ctx = screen.c.getContext('2d');
         ctx.shadowColor = "rgba(0,0,0,0.3)";
-        if (this.shadow){
+        console.log(this.ismousedown)
+        if (this.istouchstart || this.ismousedown) {
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+        } else {
             ctx.shadowOffsetX = 3;
             ctx.shadowOffsetY = 3;
-        }
-        this.image2d.draw(ctx, screen);
+        }   
+        super.render(screen);
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 0;
     }
 }
 
-class Image2D extends GameObject{
-    constructor(image, config) {
-        super()
-        this.image = image;
-        this.config = config;
-    }
-    draw(ctx, screen) {
-        if (this.config.sx && this.config.sy && this.config.sw && config.sh) {
-            ctx.drawImage(
-                this.image,
-                screen.getX(this.config.sx),
-                screen.getY(this.config.sy),
-                screen.getX(this.config.sw),
-                screen.getY(this.config.sh),
-                screen.getX(this.config.dx),
-                screen.getY(this.config.dy),
-                screen.getX(this.config.dw),
-                screen.getY(this.config.dh)
-            );
-        } else if (this.config.dw && this.config.dh) {
-            ctx.drawImage(
-                this.image,
-                screen.getX(this.config.dx),
-                screen.getY(this.config.dy),
-                screen.getX(this.config.dw),
-                screen.getY(this.config.dh)
-            );
-        } else {
-            ctx.drawImage(
-                this.image,
-                screen.getX(this.config.dx),
-                screen.getY(this.config.dy),
-            );
-        }
-    }
-}
-class Config {
-    static d(x, y, w, h) {
-        return { dx: x, dy: y, dw: w, dh: h }
+
+class Rect {
+    constructor(x, y, w, h) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
     }
 }
 
-class TitleText extends GameObject {
-    draw(ctx, screen) {
-        ctx.fillStyle = "blue";
-        ctx.font = `bold ${screen.getX(300)}px さわらび明朝 `;
-        ctx.shadowOffsetX = 3;
-        ctx.shadowOffsetY = 3;
-        ctx.shadowColor = "rgba(0,0,0,0.3)";
-        ctx.fillText("大集合", 0, screen.getY(600));
-        ctx.fillStyle = "gold";
-        ctx.fillText("★", screen.getY(300), screen.getY(900));
-        ctx.fillStyle = "orange";
-        ctx.font = `bold ${screen.getX(900 / 8)}px selif `;
-        ctx.fillText("サモンズめぇめぇ", 0, screen.getY(1100));
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-        ctx.fillStyle = "green";
-        ctx.font = `bold ${screen.getX(900 / 12)}px さわらび明朝 `;
-        ctx.fillText("はじめる", screen.getX(900 / 3), screen.getY(1300));
-    }
-}
-
-class WaitText extends GameObject {
-    constructor(){
-        super()
-        this.txt = "..."
-        this.count = 0;
-    }
-    draw(ctx, screen) {
-        this.count ++;
-        if (this.count > 30) {
-            this.count = 0;
-            this.txt = Array(1 + (this.txt.length+1)%4).join("."); 
-        }
-        ctx.fillStyle = "green";
-        ctx.font = `bold ${screen.getX(900 / 8)}px selif `;
-        ctx.fillText("対戦相手を", 0, screen.getY(1000));
-        ctx.fillText("探しています" + this.txt, 0, screen.getY(1100));
-    }
-}
-
-class testText extends GameObject {
-    draw(ctx, screen) {
-        ctx.fillStyle = "red";
-        ctx.font = `bold ${screen.getX(900 / 8)}px selif `;
-        ctx.fillText("対戦相手を発見", 0, screen.getY(1000));
-    }
-}

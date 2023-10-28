@@ -1,7 +1,7 @@
 'use strict';
 
-let screen;
-let assets;
+
+const assets = new Assets();
 let socket;
 let inviting = false;
 let inGame = false;
@@ -39,13 +39,11 @@ window.onload = () => {
             inGame = false;
         };
     });
-    assets = new Assets();
 
     assets.onLoadAll(() => {
-        screen = new Screen();
-        let titleScene = createTitleScene();
+        const screen = new Screen();
+        let titleScene = new TitleScene();
         screen.setScene(titleScene);
-        screen.draw();
     });
 }
 
