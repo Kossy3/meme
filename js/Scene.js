@@ -135,7 +135,7 @@ class EndScene extends Scene {
         } else {
             this.addGameObject(new LoseText());
         }
-        
+
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         this.addGameObject(new EndButton(new Rect(300, 1000, 300, 150), btnImage, "タイトルへ"));
     }
@@ -147,8 +147,8 @@ class GameScene extends Scene {
         console.log("game")
         const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
         this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
-        for (let i=0; i<30; i++){
-            this.addGameObject(new Saku(new Rect(i*30, 600-15, 30, 30)))
+        for (let i = 0; i < 30; i++) {
+            this.addGameObject(new Saku(new Rect(i * 30, 600 - 15, 30, 30)))
         }
     }
 
@@ -157,17 +157,17 @@ class GameScene extends Scene {
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         for (let i = 0; i < game.acts.length; i++) {
             console.log(game.acts[i]);
-            this.addGameObject(new ActionButton(new Rect(300 * (i%3), 1200 + 150 * Math.floor(i / 3), 300, 150), btnImage, game.acts[i]));
+            this.addGameObject(new ActionButton(new Rect(300 * (i % 3), 1200 + 150 * Math.floor(i / 3), 300, 150), btnImage, game.acts[i]));
         }
         game.player.banana.splice(0)
         for (let i = 0; i < game.player.life; i++) {
-            const banana = new Banana(new Rect(100 * (i%9), 1100 + 100 * Math.floor(i / 9), 100, 100));
+            const banana = new Banana(new Rect(100 * (i % 9), 1100 + 100 * Math.floor(i / 9), 100, 100));
             this.addGameObject(banana);
             game.player.banana.push(banana);
         }
         game.enemy.banana.splice(0)
         for (let i = 0; i < game.enemy.life; i++) {
-            const banana = new Banana(new Rect(800 - 100 * (i%9), 0 + 100 * Math.floor(i / 9), 100, 100))
+            const banana = new Banana(new Rect(800 - 100 * (i % 9), 0 + 100 * Math.floor(i / 9), 100, 100))
             this.addGameObject(banana);
             game.enemy.banana.push(banana)
         }
@@ -186,7 +186,7 @@ class ActionButton extends Button {
         });
     }
     update(screen) {
-        if (game.turn!= this.turn || !game.selecting) {
+        if (game.turn != this.turn || !game.selecting) {
             this.dispatchEvent("destroy", new GameEvent(this));
         }
     }
@@ -214,21 +214,21 @@ class CountText extends GameObject {
 }
 
 class ActionText extends GameObject {
-    constructor (type) {
+    constructor(type) {
         super();
         this.text = game.types[type];
     }
-    update(screen){
-        if(game.selecting) {
+    update(screen) {
+        if (game.selecting) {
             this.dispatchEvent("destroy", new GameEvent(this));
         }
     }
     render(screen) {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
-        const px = screen.getX(900/this.text.length);
+        const px = screen.getX(900 / this.text.length);
         ctx.font = `bold ${px}px selif `;
-        ctx.fillText(this.text, 0, screen.getY(1500 - px/2));
+        ctx.fillText(this.text, 0, screen.getY(1500 - px / 2));
     }
 }
 
@@ -247,17 +247,17 @@ class Banana extends Sprite {
         this._damaged = 0;
     }
     update() {
-        if (game.turn!= this.turn) {
+        if (game.turn != this.turn) {
             this.dispatchEvent("destroy", new GameEvent(this));
         }
     }
     render(screen) {
         if (this._damaged > 0) {
-            if (this._damaged%10 < 5) {
+            if (this._damaged % 10 < 5) {
                 super.render(screen);
-                
+
             }
-            this._damaged ++;
+            this._damaged++;
         } else {
             super.render(screen);
         }
@@ -277,50 +277,91 @@ class Meme extends Sprite {
         this._myMeme = myMeme;
         this._initcnt = 0;
         this._speed = 2;
-        this._atkcnt = 0;
-        this._dfncnt = 0;
+        this._cnt = 0;
+        this._go = false;
+        this._atk = false;
+        this._dfn = false;
+        this._angle = 0;
+        this._away = false;
     }
-    atk() {
-        this._atkcnt = 1;
+    atk(success = false) {
+        this._go = true;
+        this._atk = success;
+        this._away = !success;
     }
-    dfn() {
-        this._dfncnt = 1;
+    dfn(success = false) {
+        this._go = true;
+        this._dfn = true;
+        this._away = !success;
+        this.texture = new Texture(new Rect(0, 0, 64, 64), assets.kushon);
+        setTimeout(() => {
+            this.texture = new Texture(new Rect(0, 0, 64, 64), assets.meme);
+        }, 4000);
+    }
+    gotoCenter() {
+        if (this._myMeme) {
+            this.x += (350 - this.x) / (30 - this._cnt);
+            this.y += (600 - this.y) / (30 - this._cnt);
+        } else {
+            this.x += (350 - this.x) / (30 - this._cnt);
+            this.y += (400 - this.y) / (30 - this._cnt);
+        }
+    }
+    gotoBanana(myBanana) {
+        if (myBanana) {
+            this.x += (0 - this.x) / (30 - this._cnt);
+            this.y += (1000 - this.y) / (30 - this._cnt);
+        } else {
+            this.x += (700 - this.x) / (30 - this._cnt);
+            this.y += (0 - this.y) / (30 - this._cnt);
+        }
+
+    }
+    gotoAway(myMeme) {
+        if (myMeme) {
+            this.x += (900 - this.x) / (30 - this._cnt);
+            this.y += (1200 - this.y) / (30 - this._cnt);
+        } else {
+            this.x += (0 - this.x) / (30 - this._cnt);
+            this.y += (0 - this.y) / (30 - this._cnt);
+        }
     }
     update(screen) {
         if (this._initcnt < 150) {
-            this._initcnt ++;
+            this._initcnt++;
             this.x -= this._speed;
             return
         }
-        if (this._atkcnt > 0) {
-            if (this._myMeme) {
-                this.y += (0 - this.y) / (60 - this._atkcnt);;
-                this.x += (700 - this.x) / (60 - this._atkcnt);
-            } else {
-                this.y += (1000 - this.y) / (60 - this._atkcnt);
-                this.x += (0 - this.x) / (60 - this._atkcnt);
-            }
-            this._atkcnt ++;
-            if (this._atkcnt == 60) {
-                this.dispatchEvent("destroy", new GameEvent(this));
+        if (this._go > 0) {
+            this.gotoCenter();
+            this._cnt++;
+            if (this._cnt == 30) {
+                this._go = false;
+                this._cnt = 0;
             }
             return;
         }
-        if (this._dfncnt > 0) {
-            this.texture = new Texture(new Rect(0, 0, 64, 64), assets.kushon)
-            if (this._myMeme) {
-                this.y += (1000 - this.y) / (60 - this._dfncnt);
-                this.x += (0 - this.x) / (60 - this._dfncnt);
-            } else {
-                this.y += (0 - this.y) / (60 - this._dfncnt);;
-                this.x += (700 - this.x) / (60 - this._dfncnt);
+        if (this._away > 0) {
+            this.gotoAway(this._myMeme);
+            this._angle += 10
+            this._cnt++;
+            if (this._cnt == 30) {
+                this._away = false;
+                this._cnt = 0;
+                this._angle = 0;
+                if (!this._dfn) {
+                    this.dispatchEvent("destroy", new GameEvent(this));
+                }
             }
-            this._dfncnt ++;
-            if (this._dfncnt == 60) {
-                setTimeout(()=>{
-                    this.texture = new Texture(new Rect(0, 0, 64, 64), assets.meme);
-                }, 2000);
-                this._dfncnt = 0;
+            return;
+        }
+        if (this._atk) {
+            this.gotoBanana(!this._myMeme);
+            this._cnt++;
+            if (this._cnt == 30) {
+                this.dispatchEvent("destroy", new GameEvent(this));
+                this._atk = false;
+                this._cnt = 0;
             }
             return;
         }
@@ -341,5 +382,30 @@ class Meme extends Sprite {
             minY = 0;
         }
         this.y = Math.min(Math.max(this.y, minY), maxY);
+    }
+
+    render(screen) {
+        if (this._angle > 0) {
+            this._angle += 10;
+            const ctx = screen.ctx;
+            const TO_RADIANS = Math.PI / 180;
+            // コンテキストを保存する
+            ctx.save();
+            // 回転の中心に原点を移動する
+            ctx.translate(screen.getX(this.x), screen.getY(this.y));
+            // canvasを回転する
+            ctx.rotate(this._angle * TO_RADIANS);
+            const rect = this.texture.rect;
+            ctx.drawImage(this.texture.image,
+                rect.x, rect.y,
+                rect.w, rect.h,
+                -screen.getX(this.w) / 2, -screen.getY(this.h) / 2,
+                screen.getX(this.w), screen.getY(this.h));
+            // コンテキストを元に戻す
+            ctx.restore();
+        } else {
+            super.render(screen);
+        }
+
     }
 }

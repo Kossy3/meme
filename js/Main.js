@@ -42,12 +42,8 @@ window.onload = () => {
         const label = new ActionText(type);
         screen.scene.addGameObject(label);
     });
-    socket.on("txt", (message) => {
-        txt.innerHTML = message;
-    });
     socket.on("result", (data) => {
         game.selecting = false;
-        txt.innerHTML = data.message;
         console.log(data);
         if (data.end) {
             game.playing = false;
@@ -56,7 +52,7 @@ window.onload = () => {
 
         }
 
-        if (data.you.act == "call") {
+        if (data.player.act == "call") {
             let meme = new Meme(new Rect(900, 800, 200, 200), true)
             screen.scene.addGameObject(meme);
             game.player.meme.push(meme);
@@ -66,38 +62,38 @@ window.onload = () => {
             screen.scene.addGameObject(meme);
             game.enemy.meme.push(meme);
         }
-        if (data.you.act == "atk") {
-            game.player.atk(1);
+        if (data.player.act == "atk") {
+            game.player.atk(1, data.player.success);
         }
         if (data.enemy.act == "atk") {
-            game.enemy.atk(1);
+            game.enemy.atk(1, data.enemy.success);
         }
-        if (data.you.act == "spAtk") {
-            game.player.atk(3);
+        if (data.player.act == "spAtk") {
+            game.player.atk(3, data.player.success);
         }
         if (data.enemy.act == "spAtk") {
-            game.enemy.atk(3);
+            game.enemy.atk(3, data.enemy.success);
         }
-        if (data.you.act == "dfn") {
-            game.player.dfn();
+        if (data.player.act == "dfn") {
+            game.player.dfn(data.player.success);
         }
         if (data.enemy.act == "dfn") {
-            game.enemy.dfn();
+            game.enemy.dfn(data.enemy.success);
         }
-        if (game.player.life > data.you.life) {
+        if (game.player.life > data.player.life) {
             game.player.damage();
         }
         if (game.enemy.life > data.enemy.life) {
             game.enemy.damage();
         }
 
-        game.player.life = data.you.life;
+        game.player.life = data.player.life;
         game.enemy.life = data.enemy.life;
     });
 
     socket.io.on("error", (error) => {
         alert("接続エラーが発生しました。");
-        window.reload();
+        location.reload();
       });
 }
 

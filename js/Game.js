@@ -32,14 +32,14 @@ class Player {
         this.life = 3;
         this.banana = [];
     }
-    atk(n) {
+    atk(n, success) {
         for (let i=0; i < n; i++){
-            this.meme[0].atk();
+            this.meme[0].atk(success);
             this.meme.splice(0, 1);
         }
     }
-    dfn(n) {
-        this.meme[0].dfn();
+    dfn(success) {
+        this.meme[0].dfn(success);
     }
     damage() {
         this.banana[this.banana.length-1].damage();
