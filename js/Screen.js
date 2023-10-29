@@ -255,7 +255,7 @@ class Button extends Sprite {
         ctx.shadowOffsetY = 0;
         ctx.fillStyle = "green";
         const px = Math.min(Math.max(screen.getX(this.w / this.text.length), screen.getX(16)));
-        ctx.font = `bold ${px}px さわらび明朝 `;
+        ctx.font = `bold ${px}px selif `;
         ctx.fillText(this.text, screen.getX(this.x), screen.getY(this.y + px / 2 + this.h / 2), this.w);
     }
 }
