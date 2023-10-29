@@ -7,7 +7,7 @@ class TitleText extends GameObject {
     render(screen) {
         const ctx = screen.ctx;
         ctx.fillStyle = "blue";
-        ctx.font = `bold ${screen.getX(300)}px selif `;
+        ctx.font = `bold ${screen.getX(300)}px sans-serif `;
         ctx.shadowOffsetX = 3;
         ctx.shadowOffsetY = 3;
         ctx.shadowColor = "rgba(0,0,0,0.3)";
@@ -15,7 +15,7 @@ class TitleText extends GameObject {
         ctx.fillStyle = "gold";
         ctx.fillText("★", screen.getY(300), screen.getY(900));
         ctx.fillStyle = "orange";
-        ctx.font = `bold ${screen.getX(900 / 8)}px selif `;
+        ctx.font = `bold ${screen.getX(900 / 8)}px sans-serif `;
         ctx.fillText("サモンズめぇめぇ", 0, screen.getY(1100));
     }
 }
@@ -68,7 +68,7 @@ class WaitText extends GameObject {
     render(screen) {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
-        ctx.font = `bold ${screen.getX(900 / 8)}px selif `;
+        ctx.font = `bold ${screen.getX(900 / 8)}px sans-serif `;
         ctx.fillText("対戦相手を", screen.getX(900 / 5), screen.getY(1000));
         ctx.fillText("探しています" + this.txt, screen.getX(900 / 5 - 900 / 8), screen.getY(1100));
     }
@@ -100,7 +100,7 @@ class WinText extends GameObject {
     render(screen) {
         const ctx = screen.ctx;
         ctx.fillStyle = "red";
-        ctx.font = `bold ${screen.getX(300)}px selif `;
+        ctx.font = `bold ${screen.getX(300)}px sans-serif `;
         ctx.fillText("かった", 0, screen.getY(600));
     }
 }
@@ -109,7 +109,7 @@ class LoseText extends GameObject {
     render(screen) {
         const ctx = screen.ctx;
         ctx.fillStyle = "blue";
-        ctx.font = `bold ${screen.getX(300)}px selif `;
+        ctx.font = `bold ${screen.getX(300)}px sans-serif `;
         ctx.fillText("まけた", 0, screen.getY(600));
     }
 }
@@ -248,7 +248,7 @@ class CountText extends GameObject {
         if (this._count > 0) {
             const ctx = screen.ctx;
             ctx.fillStyle = "red";
-            ctx.font = `bold ${screen.getX(200)}px selif `;
+            ctx.font = `bold ${screen.getX(200)}px sans-serif `;
             ctx.fillText(`${this._count}`, screen.getX(this.x), screen.getY(this.y));
         } else {
             this.dispatchEvent("destroy", new GameEvent(this));
@@ -270,7 +270,7 @@ class ActionText extends GameObject {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
         const px = screen.getX(900 / this.text.length);
-        ctx.font = `bold ${px}px selif `;
+        ctx.font = `bold ${px}px sans-serif `;
         ctx.fillText(this.text, 0, screen.getY(1500 - px / 2));
     }
 }
