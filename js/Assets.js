@@ -27,7 +27,8 @@ class Assets {
         new Asset('./data/sogen.png', "img", callback("sogen"));
         new Asset('./data/kushon.png', "img", callback("kushon"));
         new Asset('./data/button.png', "img", callback("button"));
-        new Asset('./data/tekito.mid', "mid", callback("bgm1"));
+        new Asset('./data/bgm1.mid', "mid", callback("bgm1"));
+        new Asset('./data/pi.mid', "mid", callback("pi"));
     }
 
     onLoadAll(callback) {

@@ -26,8 +26,17 @@ class StartButton extends Button {
         this.click = false;
         this.addEventListener("click", (e) => {
             const synth = new WebAudioTinySynth();
+            synth.loadMIDI(assets.pi);
+            synth.setMasterVol(0.1);
+            synth.playMIDI();
+            const play = () => {
+            const synth = new WebAudioTinySynth();
             synth.loadMIDI(assets.bgm1);
-            //synth.playMIDI();
+            synth.setMasterVol(0.1);
+            synth.playMIDI();
+            }
+            setInterval(play, 70000);
+            play();
             console.log("click");
             game.inviting = true;
             this.click = true;
@@ -71,6 +80,10 @@ class EndButton extends Button {
         this.click = false;
         this.addEventListener("click", (e) => {
             this.click = true;
+            const synth = new WebAudioTinySynth();
+            synth.loadMIDI(assets.pi);
+            synth.setMasterVol(0.1);
+            synth.playMIDI();
         });
     }
     update(screen) {
@@ -184,6 +197,10 @@ class ActionButton extends Button {
             if (game.act == "") {
                 socket.emit("act", this.act);
             }
+            const synth = new WebAudioTinySynth();
+            synth.loadMIDI(assets.pi);
+            synth.setMasterVol(0.1);
+            synth.playMIDI();
         });
     }
     update(screen) {
