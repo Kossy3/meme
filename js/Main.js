@@ -1,7 +1,6 @@
 'use strict';
 
 const game = new Game();
-mee.volume = 0.1;
 let assets;
 let screen;
 
