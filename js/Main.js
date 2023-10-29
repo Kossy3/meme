@@ -15,8 +15,17 @@ window.onload = () => {
     });
     socket.on('login', (id) => {
         game.id = id;
-        socket.emit('login', "test");
-        console.log("login");
+        fetch(`https://memeserver.kossy3.repl.co/sess`, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"sess_id": id})
+        }).then(()=>{
+            socket.emit('login', id);
+            console.log("login");
+         });
     });
     socket.on('invite', (id) => {
         if (game.inviting && id != game.id) {

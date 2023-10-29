@@ -7,7 +7,7 @@ class TitleText extends GameObject {
     render(screen) {
         const ctx = screen.ctx;
         ctx.fillStyle = "blue";
-        ctx.font = `bold ${screen.getX(300)}px さわらび明朝 `;
+        ctx.font = `bold ${screen.getX(300)}px selif `;
         ctx.shadowOffsetX = 3;
         ctx.shadowOffsetY = 3;
         ctx.shadowColor = "rgba(0,0,0,0.3)";
@@ -30,10 +30,10 @@ class StartButton extends Button {
             synth.setMasterVol(0.1);
             synth.playMIDI();
             const play = () => {
-            const synth = new WebAudioTinySynth();
-            synth.loadMIDI(assets.bgm1);
-            synth.setMasterVol(0.1);
-            synth.playMIDI();
+                const synth = new WebAudioTinySynth();
+                synth.loadMIDI(assets.bgm1);
+                synth.setMasterVol(0.1);
+                synth.playMIDI();
             }
             setInterval(play, 70000);
             play();
@@ -69,8 +69,8 @@ class WaitText extends GameObject {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
         ctx.font = `bold ${screen.getX(900 / 8)}px selif `;
-        ctx.fillText("対戦相手を", screen.getX(900/5), screen.getY(1000));
-        ctx.fillText("探しています" + this.txt, screen.getX(900/5 - 900/8), screen.getY(1100));
+        ctx.fillText("対戦相手を", screen.getX(900 / 5), screen.getY(1000));
+        ctx.fillText("探しています" + this.txt, screen.getX(900 / 5 - 900 / 8), screen.getY(1100));
     }
 }
 
@@ -154,6 +154,31 @@ class EndScene extends Scene {
     }
 }
 
+class SettingScene extends Scene {
+    constructor(result) {
+        super();
+        let textarea = document.createElement('textarea');
+        textarea.className = 'info';
+        document.body.appendChild(textarea);
+        var x = e.clientX - canvas.offsetLeft,
+            y = e.clientY - canvas.offsetTop;
+        console.log("asasasasasasasasas" + x);
+        textarea.value = "x: " + x + " y: " + y;
+        textarea.style.position = 'absolute';
+        textarea.style.top = e.clientY + 'px';
+        textarea.style.left = e.clientX + 'px';
+        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
+        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        if (result == "win") {
+            this.addGameObject(new WinText());
+        } else {
+            this.addGameObject(new LoseText());
+        }
+        const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
+        this.addGameObject(new EndButton(new Rect(300, 1000, 300, 150), btnImage, "タイトルへ"));
+    }
+}
+
 class GameScene extends Scene {
     constructor() {
         super();
@@ -161,7 +186,7 @@ class GameScene extends Scene {
         const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
         this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
         for (let i = 0; i < 30; i++) {
-            if(i==12) {i+= 6}
+            if (i == 12) { i += 6 }
             this.addGameObject(new Saku(new Rect(i * 30, 600 - 15, 30, 30)))
         }
     }
@@ -412,7 +437,7 @@ class Meme extends Sprite {
             // コンテキストを保存する
             ctx.save();
             // 回転の中心に原点を移動する
-            ctx.translate(screen.getX(this.x+100), screen.getY(this.y+100));
+            ctx.translate(screen.getX(this.x + 100), screen.getY(this.y + 100));
             // canvasを回転する
             ctx.rotate(this._angle * TO_RADIANS);
             const rect = this.texture.rect;
