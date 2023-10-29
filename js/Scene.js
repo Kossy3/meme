@@ -148,12 +148,13 @@ class GameScene extends Scene {
         const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
         this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
         for (let i = 0; i < 30; i++) {
+            if(i==12) {i+= 6}
             this.addGameObject(new Saku(new Rect(i * 30, 600 - 15, 30, 30)))
         }
     }
 
     nextTurn() {
-        this.addGameObject(new CountText(400, 675));
+        this.addGameObject(new CountText(383, 675));
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         for (let i = 0; i < game.acts.length; i++) {
             console.log(game.acts[i]);
@@ -283,6 +284,7 @@ class Meme extends Sprite {
         this._dfn = false;
         this._angle = 0;
         this._away = false;
+        this._awayX = Math.random() * 900;
     }
     atk(success = false) {
         this._go = true;
@@ -295,16 +297,17 @@ class Meme extends Sprite {
         this._away = !success;
         this.texture = new Texture(new Rect(0, 0, 64, 64), assets.kushon);
         setTimeout(() => {
+            this._dfn = false;
             this.texture = new Texture(new Rect(0, 0, 64, 64), assets.meme);
         }, 4000);
     }
     gotoCenter() {
         if (this._myMeme) {
             this.x += (350 - this.x) / (30 - this._cnt);
-            this.y += (600 - this.y) / (30 - this._cnt);
+            this.y += (550 - this.y) / (30 - this._cnt);
         } else {
             this.x += (350 - this.x) / (30 - this._cnt);
-            this.y += (400 - this.y) / (30 - this._cnt);
+            this.y += (450 - this.y) / (30 - this._cnt);
         }
     }
     gotoBanana(myBanana) {
@@ -319,10 +322,10 @@ class Meme extends Sprite {
     }
     gotoAway(myMeme) {
         if (myMeme) {
-            this.x += (900 - this.x) / (30 - this._cnt);
+            this.x += (this._awayX - this.x) / (30 - this._cnt);
             this.y += (1200 - this.y) / (30 - this._cnt);
         } else {
-            this.x += (0 - this.x) / (30 - this._cnt);
+            this.x += (this._awayX - this.x) / (30 - this._cnt);
             this.y += (0 - this.y) / (30 - this._cnt);
         }
     }
@@ -375,11 +378,11 @@ class Meme extends Sprite {
         let maxY;
         let minY;
         if (this._myMeme) {
-            maxY = 1200 - 200;
-            minY = 600;
+            maxY = 1200 - 150;
+            minY = 600 - 50;
         } else {
-            maxY = 600 - 200;
-            minY = 0;
+            maxY = 600 - 150;
+            minY = -50;
         }
         this.y = Math.min(Math.max(this.y, minY), maxY);
     }
@@ -392,7 +395,7 @@ class Meme extends Sprite {
             // コンテキストを保存する
             ctx.save();
             // 回転の中心に原点を移動する
-            ctx.translate(screen.getX(this.x), screen.getY(this.y));
+            ctx.translate(screen.getX(this.x+100), screen.getY(this.y+100));
             // canvasを回転する
             ctx.rotate(this._angle * TO_RADIANS);
             const rect = this.texture.rect;
