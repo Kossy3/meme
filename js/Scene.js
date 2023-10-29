@@ -60,8 +60,8 @@ class WaitText extends GameObject {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
         ctx.font = `bold ${screen.getX(900 / 8)}px selif `;
-        ctx.fillText("対戦相手を", 0, screen.getY(1000));
-        ctx.fillText("探しています" + this.txt, 0, screen.getY(1100));
+        ctx.fillText("対戦相手を", screen.getX(900/5), screen.getY(1000));
+        ctx.fillText("探しています" + this.txt, screen.getX(900/5 - 900/8), screen.getY(1100));
     }
 }
 
