@@ -3,6 +3,7 @@
 const game = new Game();
 let assets;
 let screen;
+const bgm = new BGM();
 
 const socket = io.connect("https://memeserver.kossy3.repl.co/", { withCredentials: true });
 
@@ -24,6 +25,7 @@ window.onload = () => {
             body: JSON.stringify({"sess_id": id})
         }).then(()=>{
             socket.emit('login', id);
+            game.login = true;
             console.log("login");
          });
     });

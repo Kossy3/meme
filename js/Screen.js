@@ -119,6 +119,9 @@ class Scene extends GameEventDispatcher {
         gameobject.addEventListener('destroy', (e) => {
             this.removeGameObject(e.target);
         })
+        gameobject.addEventListener('spawn', (e) => {
+            this.addGameObject(e.target);
+        });
     }
     removeGameObject(gameobject) {
         const index = this.gameobjects.indexOf(gameobject);
@@ -178,6 +181,9 @@ class GameObject extends GameEventDispatcher {
     clickcancel() { }
     _destroy() {
         this.dispatchEvent('destroy', new GameEvent(this));
+    }
+    _spawn(gameObject) {
+        this.dispatchEvent('spawn', new GameEvent(gameObject));
     }
 }
 

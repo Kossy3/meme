@@ -1,4 +1,24 @@
 'use strict';
+class BGM {
+    constructor() {
+        this.synth = new WebAudioTinySynth();
+        this.playing = false;
+        this.vol = 0.1;
+    }
+    play() {
+        if (!this.playing) {
+            setInterval(this._loop, 70000);
+            this._loop();
+        }
+        
+    }
+
+    _loop() {
+        this.synth.loadMIDI(assets.bgm1);
+        this.synth.setMasterVol(this.vol);
+        this.synth.playMIDI();
+    }
+}
 
 class TitleText extends GameObject {
     constructor(x, y) {
@@ -20,33 +40,65 @@ class TitleText extends GameObject {
     }
 }
 
+class LoginText extends GameObject {
+    constructor(x, y) {
+        super(x, y);
+        this._txt = "..."
+        this._count = 0;
+    }
+    update(screen) {
+        if (game.login) {
+            this._destroy();
+            const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
+            this._spawn(new StartButton(new Rect(300, 1200, 300, 150), btnImage, "　はじめる　"));
+        }
+        this._count++;
+        if (this._count > 5) {
+            this._count = 0;
+            this._txt = Array(1 + (this._txt.length + 1) % 4).join(".");
+        }
+    }
+    render(screen) {
+        const ctx = screen.ctx;
+        ctx.fillStyle = "green";
+        ctx.font = `bold ${screen.getX(300 / 6)}px sans-serif `;
+        ctx.fillText("ログイン中"+this._txt, screen.getX(300), screen.getY(1300));
+    }
+}
+
 class StartButton extends Button {
     constructor(rect, texture, text) {
         super(rect, texture, text);
         this.click = false;
         this.addEventListener("click", (e) => {
-            const synth = new WebAudioTinySynth();
-            synth.loadMIDI(assets.pi);
-            synth.setMasterVol(0.1);
-            synth.playMIDI();
-            const play = () => {
-                const synth = new WebAudioTinySynth();
-                synth.loadMIDI(assets.bgm1);
-                synth.setMasterVol(0.1);
-                synth.playMIDI();
-            }
-            setInterval(play, 70000);
-            play();
+            bgm.play();
             console.log("click");
             game.inviting = true;
             this.click = true;
         });
     }
     update(screen) {
-        super.update();
         if (this.click) {
             const wait = new WaitScene()
             screen.setScene(wait);
+            this.click = false;
+        }
+    }
+}
+
+class SettingButton extends Button {
+    constructor(rect, texture, text) {
+        super(rect, texture, text);
+        this.click = false;
+        this.addEventListener("click", (e) => {
+            this.click = true;
+        });
+    }
+    update(screen) {
+        super.update();
+        if (this.click) {
+            const setting = new SettingScene();
+            screen.setScene(setting);
             this.click = false;
         }
     }
@@ -120,9 +172,10 @@ class TitleScene extends Scene {
         const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
         this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
-        this.addGameObject(new StartButton(new Rect(300, 1200, 300, 150), btnImage, "はじめる"));
+        this.addGameObject(new LoginText());
         this.addGameObject(new TitleText());
         const memeImage = new Texture(new Rect(0, 0, 64, 64), assets.meme);
+        // this.addGameObject(new SettingButton(new Rect(0, 1200, 200, 150), btnImage, "　設定　"));
         this.addGameObject(new Sprite(new Rect(400, 1300, 300, 300), memeImage));
     }
 
@@ -157,16 +210,13 @@ class EndScene extends Scene {
 class SettingScene extends Scene {
     constructor(result) {
         super();
-        let textarea = document.createElement('textarea');
-        textarea.className = 'info';
+        let textarea = document.createElement('input');
+        textarea.type = '';
         document.body.appendChild(textarea);
-        var x = e.clientX - canvas.offsetLeft,
-            y = e.clientY - canvas.offsetTop;
-        console.log("asasasasasasasasas" + x);
         textarea.value = "x: " + x + " y: " + y;
         textarea.style.position = 'absolute';
-        textarea.style.top = e.clientY + 'px';
-        textarea.style.left = e.clientX + 'px';
+        textarea.style.top =  '0px';
+        textarea.style.left = '0px';
         const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
         this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
         if (result == "win") {

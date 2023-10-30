@@ -1,6 +1,7 @@
 class Game {
     constructor (id) {
         this.id;
+        this.login = false;
         this.inviting = false;
         this.playing = false;
         this.acts = [];
