@@ -2,15 +2,13 @@
 class BGM {
     constructor() {
         this.synth = new WebAudioTinySynth();
-        this.playing = false;
         this.vol = 0.1;
+        this._interval = setInterval(()=>{},1000);
     }
     play() {
-        if (!this.playing) {
-            setInterval(this._loop, 70000);
-            this._loop();
-        }
-        
+        clearInterval(this._interval);
+        this._interval = setInterval(this._loop.bind(this), 70000);
+        this._loop();
     }
 
     _loop() {
