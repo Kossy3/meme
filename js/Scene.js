@@ -328,8 +328,10 @@ class GameScene extends Scene {
         this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
         for (let i = 0; i < 30; i++) {
             if (i == 12) { i += 6 }
-            this.addGameObject(new Saku(new Rect(i * 30, 600 - 15, 30, 30)))
+            this.addGameObject(new Saku(new Rect(i * 30, 600 - 15, 30, 30)));
         }
+        this.addGameObject(new NameText(game.player.name, 900 - game.player.name.length*50, 1150));
+        this.addGameObject(new NameText(game.enemy.name, 0, 50));
     }
 
     nextTurn() {
@@ -353,6 +355,7 @@ class GameScene extends Scene {
         }
     }
 }
+
 
 class ActionButton extends Button {
     constructor(rect, texture, text) {
@@ -449,6 +452,22 @@ class Banana extends Sprite {
     damage() {
         this._damaged = 1;
         console.log("nana")
+    }
+}
+
+class NameText extends GameObject {
+    constructor(name, x, y) {
+        super();
+        this._name = name;
+        this._x = x;
+        this._y = y;
+    }
+    render(screen) {
+        super.render(screen);
+        const ctx = screen.ctx;
+        ctx.fillStyle = "blue";
+        ctx.font = `bold ${screen.getY(50)}px sans-serif `;
+        ctx.fillText(this._name, screen.getX(this._x), screen.getY(this._y));
     }
 }
 

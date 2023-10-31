@@ -44,6 +44,8 @@ window.onload = () => {
         game.inviting = false;
         game.playing = false;
         game.reset();
+        game.player.name = game.name;
+        game.enemy.name = enemy.name;
         screen.scene.start(enemy);
     });
     socket.on('select', (acts) => {
