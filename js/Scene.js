@@ -3,7 +3,7 @@ class BGM {
     constructor() {
         this.synth = new WebAudioTinySynth();
         this.vol = 0.1;
-        this._interval = setInterval(()=>{},1000);
+        this._interval = setInterval(() => { }, 1000);
     }
     play() {
         clearInterval(this._interval);
@@ -16,6 +16,21 @@ class BGM {
         this.synth.setMasterVol(this.vol);
         this.synth.playMIDI();
     }
+}
+
+class TitleScene extends Scene {
+    constructor() {
+        super();
+        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
+        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
+        this.addGameObject(new LoginText());
+        this.addGameObject(new TitleText());
+        const memeImage = new Texture(new Rect(0, 0, 64, 64), assets.meme);
+        // this.addGameObject(new SettingButton(new Rect(0, 1200, 200, 150), btnImage, "　設定　"));
+        this.addGameObject(new Sprite(new Rect(400, 1300, 300, 300), memeImage));
+    }
+
 }
 
 class TitleText extends GameObject {
@@ -49,6 +64,7 @@ class LoginText extends GameObject {
             this._destroy();
             const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
             this._spawn(new StartButton(new Rect(300, 1200, 300, 150), btnImage, "　はじめる　"));
+            this._spawn(new SettingButton(new Rect(50, 1200, 200, 150), btnImage, "　設定　"));
         }
         this._count++;
         if (this._count > 5) {
@@ -60,7 +76,7 @@ class LoginText extends GameObject {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
         ctx.font = `bold ${screen.getX(300 / 6)}px sans-serif `;
-        ctx.fillText("ログイン中"+this._txt, screen.getX(300), screen.getY(1300));
+        ctx.fillText("ログイン中" + this._txt, screen.getX(300), screen.getY(1300));
     }
 }
 
@@ -102,6 +118,21 @@ class SettingButton extends Button {
     }
 }
 
+class WaitScene extends Scene {
+    constructor() {
+        super();
+        socket.emit('invite', "come on");
+        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
+        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        this.waitText = new WaitText();
+        this.addGameObject(this.waitText);
+    }
+    start(enemy) {
+        this.addGameObject(new WaitMatchingText(enemy));
+        this.removeGameObject(this.waitText);
+    }
+}
+
 class WaitText extends GameObject {
     constructor(x, y) {
         super(x, y)
@@ -121,6 +152,37 @@ class WaitText extends GameObject {
         ctx.font = `bold ${screen.getX(900 / 8)}px sans-serif `;
         ctx.fillText("対戦相手を", screen.getX(900 / 5), screen.getY(1000));
         ctx.fillText("探しています" + this.txt, screen.getX(900 / 5 - 900 / 8), screen.getY(1100));
+    }
+}
+
+class WaitMatchingText extends GameObject {
+    constructor(enemy) {
+        super()
+        this.enemy = enemy;
+    }
+    render(screen) {
+        const ctx = screen.ctx;
+        ctx.fillStyle = "blue";
+        ctx.font = `bold ${screen.getX(900 / 9)}px sans-serif `;
+        ctx.fillText("対戦相手", screen.getX(50), screen.getY(500));
+        ctx.font = `bold ${screen.getX(900 / 10)}px sans-serif `;
+        ctx.fillText(this.enemy.name, screen.getX(50), screen.getY(700));
+    }
+}
+
+class EndScene extends Scene {
+    constructor(result) {
+        super();
+        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
+        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        if (result == "win") {
+            this.addGameObject(new WinText());
+        } else {
+            this.addGameObject(new LoseText());
+        }
+
+        const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
+        this.addGameObject(new EndButton(new Rect(300, 1000, 300, 150), btnImage, "タイトルへ"));
     }
 }
 
@@ -164,66 +226,97 @@ class LoseText extends GameObject {
     }
 }
 
-class TitleScene extends Scene {
-    constructor() {
-        super();
-        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
-        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
-        const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
-        this.addGameObject(new LoginText());
-        this.addGameObject(new TitleText());
-        const memeImage = new Texture(new Rect(0, 0, 64, 64), assets.meme);
-        // this.addGameObject(new SettingButton(new Rect(0, 1200, 200, 150), btnImage, "　設定　"));
-        this.addGameObject(new Sprite(new Rect(400, 1300, 300, 300), memeImage));
-    }
-
-}
-
-class WaitScene extends Scene {
-    constructor() {
-        super();
-        socket.emit('invite', "come on");
-        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
-        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
-        this.addGameObject(new WaitText());
-    }
-}
-
-class EndScene extends Scene {
-    constructor(result) {
-        super();
-        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
-        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
-        if (result == "win") {
-            this.addGameObject(new WinText());
-        } else {
-            this.addGameObject(new LoseText());
-        }
-
-        const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
-        this.addGameObject(new EndButton(new Rect(300, 1000, 300, 150), btnImage, "タイトルへ"));
-    }
-}
-
 class SettingScene extends Scene {
-    constructor(result) {
+    constructor() {
         super();
-        let textarea = document.createElement('input');
-        textarea.type = '';
-        document.body.appendChild(textarea);
-        textarea.value = "x: " + x + " y: " + y;
-        textarea.style.position = 'absolute';
-        textarea.style.top =  '0px';
-        textarea.style.left = '0px';
+        const input = document.createElement('input');
+        input.type = 'text';
+        document.body.appendChild(input);
+        input.style.position = 'absolute';
+        input.style.top = '0px';
+        input.style.left = '0px';
+        input.value = game.name;
+        input.style.display = "none";
+        this.input = input;
         const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
         this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
-        if (result == "win") {
-            this.addGameObject(new WinText());
-        } else {
-            this.addGameObject(new LoseText());
-        }
+        this.addGameObject(new SettingNameLabelText());
+        this.addGameObject(new SettingNameText(input));
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         this.addGameObject(new EndButton(new Rect(300, 1000, 300, 150), btnImage, "タイトルへ"));
+        this.addEventListener("change", (e) => {
+            input.remove();
+        })
+    }
+    update(screen) {
+        super.update(screen);
+        const rect = screen._content.getBoundingClientRect();
+        this.input.style.top = `${rect.top + screen.getY(300)}px`;
+        this.input.style.left = `${rect.left + screen.getX(300)}px`;
+        this.input.style.width = `${screen.getX(300)}px`;
+        this.input.style.height = `${screen.getX(50)}px`;
+    }
+}
+
+
+class SettingNameLabelText extends GameObject {
+    render(screen) {
+        const ctx = screen.ctx;
+        ctx.fillStyle = "green";
+        ctx.font = `bold ${screen.getX(50)}px sans-serif `;
+        ctx.fillText("おなまえ", screen.getX(50), screen.getY(350));
+    }
+}
+
+class SettingNameText extends Button {
+    constructor(input) {
+        const btnImage = new Texture(new Rect(0, 0, 16, 16), new Image());
+        const rect = new Rect(300, 300, game.name.length * 50, 100);
+        super(rect, btnImage, "");
+        this.input = input;
+        this.click = false;
+        this.addEventListener("click", (e) => {
+            this.click = true;
+        });
+    }
+    update(screen) {
+        super.update();
+        if (this.click) {
+            this.input.style.display = "block";
+            this._spawn(new SettingNameButton(this.input))
+            this._destroy();
+            this.click = false;
+        }
+    }
+    render(screen) {
+        super.render(screen);
+        const ctx = screen.ctx;
+        ctx.fillStyle = "green";
+        ctx.font = `bold ${screen.getX(50)}px sans-serif `;
+        ctx.fillText(game.name, screen.getX(300), screen.getY(350));
+    }
+}
+
+class SettingNameButton extends Button {
+    constructor(input) {
+        const rect = new Rect(650, 300, 200, 75); 
+        const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
+        super(rect, btnImage, "けってい");
+        this.input = input;
+        this.click = false;
+        this.addEventListener("click", (e) => {
+            this.click = true;
+        });
+    }
+    update(screen) {
+        super.update();
+        if (this.click) {
+            this.input.style.display = "none";
+            this._spawn(new SettingNameText(this.input))
+            this._destroy();
+            socket.emit('name', this.input.value);
+            this.click = false;
+        }
     }
 }
 

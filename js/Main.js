@@ -23,10 +23,13 @@ window.onload = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({"sess_id": id})
-        }).then(()=>{
+        }).then((response) => response.json())
+          .then((data)=>{
             socket.emit('login', id);
             game.login = true;
-            console.log("login");
+            console.log("login", data);
+            game.name = data.name;
+            game.winCount = data.win;
          });
     });
     socket.on('invite', (id) => {
@@ -34,14 +37,21 @@ window.onload = () => {
             socket.emit('accept', id);
         }
     });
+    socket.on('name', (name) => {
+        game.name = name;
+    });
+    socket.on('start', (enemy) => {
+        game.inviting = false;
+        game.playing = false;
+        game.reset();
+        screen.scene.start(enemy);
+    });
     socket.on('select', (acts) => {
         game.nextTurn();
         game.acts = acts;
         game.selecting = true;
-        if (game.inviting) {
-            game.inviting = false;
+        if (!game.playing) {
             game.playing = true;
-            game.reset();
             screen.setScene(new GameScene());
 
         }

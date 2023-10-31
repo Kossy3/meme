@@ -11,11 +11,13 @@ class Game {
         this.player = new Player();
         this.enemy = new Player();
         this.types = {
-            "call": "おいでおいで",
+            "call": "　よぶ　",
             "atk": "とつげき",
             "dfn": "くっしょん",
             "spAtk": "スーパーとつげき"
         }
+        this.name = "";
+        this.winCount = 0;
     }
     reset() {
         this.player = new Player();
@@ -32,6 +34,7 @@ class Player {
         this.meme = [];
         this.life = 3;
         this.banana = [];
+        this.name = ""
     }
     atk(n, success) {
         for (let i=0; i < n; i++){

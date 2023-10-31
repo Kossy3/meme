@@ -36,6 +36,7 @@ class Screen {
         this._c.height = this._content.clientHeight;
     }
     setScene(scene) {
+        this.scene.dispatchEvent("change", new GameEvent(this));
         this.scene = scene;
     }
     _render(timestamp) {
