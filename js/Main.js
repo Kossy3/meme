@@ -55,7 +55,12 @@ window.onload = () => {
         if (!game.playing) {
             game.playing = true;
             screen.setScene(new GameScene());
-
+            let meme1 = new Meme(new Rect(900, 200, 200, 200), false)
+            screen.scene.addGameObject(meme1);
+            game.enemy.meme.push(meme1);
+            let meme2 = new Meme(new Rect(900, 800, 200, 200), true)
+            screen.scene.addGameObject(meme2);
+            game.player.meme.push(meme2);
         }
         screen.scene.nextTurn();
     });

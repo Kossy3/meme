@@ -220,6 +220,12 @@ class Button extends Sprite {
         this.text = text;
         this.ismousedown = false;
         this.istouchstart = false;
+        this.addEventListener("click", (e) => {
+            const synth = new WebAudioTinySynth();
+            synth.loadMIDI(assets.pi);
+            synth.setMasterVol(0.1);
+            synth.playMIDI();
+        });
     }
     mousedown() {
         this.ismousedown = true;

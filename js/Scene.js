@@ -27,7 +27,6 @@ class TitleScene extends Scene {
         this.addGameObject(new LoginText());
         this.addGameObject(new TitleText());
         const memeImage = new Texture(new Rect(0, 0, 64, 64), assets.meme);
-        // this.addGameObject(new SettingButton(new Rect(0, 1200, 200, 150), btnImage, "　設定　"));
         this.addGameObject(new Sprite(new Rect(400, 1300, 300, 300), memeImage));
     }
 
@@ -39,17 +38,18 @@ class TitleText extends GameObject {
     }
     render(screen) {
         const ctx = screen.ctx;
-        ctx.fillStyle = "blue";
-        ctx.font = `bold ${screen.getX(300)}px sans-serif `;
+        ctx.fillStyle = "orange";
+        ctx.font = `bold ${screen.getX(600/4)}px sans-serif `;
         ctx.shadowOffsetX = 3;
         ctx.shadowOffsetY = 3;
         ctx.shadowColor = "rgba(0,0,0,0.3)";
-        ctx.fillText("大集合", 0, screen.getY(600));
+        ctx.fillText("大集合", screen.getX(150), screen.getY(500));
         ctx.fillStyle = "gold";
-        ctx.fillText("★", screen.getY(300), screen.getY(900));
-        ctx.fillStyle = "orange";
-        ctx.font = `bold ${screen.getX(900 / 8)}px sans-serif `;
-        ctx.fillText("サモンズめぇめぇ", 0, screen.getY(1100));
+        ctx.fillText("★", screen.getY(150 + 600/4*3), screen.getY(500));
+        ctx.fillStyle = "blue";
+        ctx.font = `bold ${screen.getX(800 / 4)}px sans-serif `;
+        ctx.fillText("サモンズ", screen.getX(50), screen.getY(750));
+        ctx.fillText("めぇめぇ", screen.getX(50), screen.getY(1000));
     }
 }
 
@@ -65,6 +65,7 @@ class LoginText extends GameObject {
             const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
             this._spawn(new StartButton(new Rect(300, 1200, 300, 150), btnImage, "　はじめる　"));
             this._spawn(new SettingButton(new Rect(50, 1200, 200, 150), btnImage, "　設定　"));
+            this._spawn(new HelpButton(new Rect(650, 1200, 200, 150), btnImage, "あそびかた"));
         }
         this._count++;
         if (this._count > 5) {
@@ -115,6 +116,106 @@ class SettingButton extends Button {
             screen.setScene(setting);
             this.click = false;
         }
+    }
+}
+
+class HelpButton extends Button {
+    constructor(rect, texture, text) {
+        super(rect, texture, text);
+        this.click = false;
+        this.addEventListener("click", (e) => {
+            this.click = true;
+        });
+    }
+    update(screen) {
+        super.update();
+        if (this.click) {
+            const setting = new HelpScene();
+            screen.setScene(setting);
+            this.click = false;
+        }
+    }
+}
+
+class HelpScene extends Scene {
+    constructor() {
+        super();
+        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
+        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        this.addGameObject(new HelpText());
+        const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
+        const memeImgae = new Texture(new Rect(0, 0, 64, 64), assets.meme);
+        this.addGameObject(new Sprite(new Rect(10+45*4, 900/8+100, 60, 60), memeImgae));
+        const bananaImgae = new Texture(new Rect(0, 0, 16, 16), assets.banana);
+        this.addGameObject(new Sprite(new Rect(20+45*2, 900/8+155, 50, 50), bananaImgae));
+        this.addGameObject(new EndButton(new Rect(300, 1400, 300, 150), btnImage, "タイトルへ"));
+    }
+}
+
+class HelpText extends GameObject {
+
+    render(screen) {
+        const ctx = screen.ctx;
+        let y = 0;
+        let x = 20;
+        ctx.fillStyle = "darkblue";
+        y += 900 / 8;
+        ctx.font = `bold ${screen.getX(900 / 8)}px sans-serif `;
+        ctx.fillText("-- あそびかた --", screen.getX(x), screen.getY(y));
+
+        ctx.font = `bold ${screen.getX(900 / 20)}px sans-serif `;
+        y += 90;
+        ctx.fillStyle = "blue";
+        ctx.fillText("大集合", screen.getX(x), screen.getY(y));
+        ctx.fillStyle = "yellow";
+        ctx.fillText("★", screen.getX(x+900/20*3), screen.getY(y));
+        ctx.fillStyle = "blue";
+        ctx.fillText("サモンズめぇめぇ", screen.getX(x+900/20*4), screen.getY(y));
+        ctx.fillStyle = "darkgreen";
+        ctx.fillText("とは、", screen.getX(x+900/20*12), screen.getY(y));
+        y += 60;
+        ctx.font = `bold ${screen.getX(900 / 20)}px sans-serif `;
+        ctx.fillText("めぇめぇ　にめぇれぇして、牧場の", screen.getX(x), screen.getY(y));
+        y += 45;
+        ctx.fillText("えさ　をうばいあうオンラインゲームです", screen.getX(x), screen.getY(y));
+        y += 60;
+        ctx.fillText("10秒に１度、自分のめぇめぇにめぇれぇ", screen.getX(x), screen.getY(y));
+        y += 45;
+        ctx.fillText("をすることができます。相手のえさを先に", screen.getX(x), screen.getY(y));
+        y += 45;
+        ctx.fillText("食べつくしたほうが勝ちです。", screen.getX(x), screen.getY(y));
+        y += 100;
+        ctx.fillText("【めぇれぇリスト】", screen.getX(x), screen.getY(y));
+        y += 45;
+        ctx.fillText("・よぶ　　　：めぇめぇを１ぴきよぶ", screen.getX(0), screen.getY(y));
+        y += 60;
+        ctx.fillText("・とつげき　：めぇめぇを１ぴき消費し、", screen.getX(0), screen.getY(y));
+        y += 45;
+        ctx.fillText("　　　　　　　相手のえさを食べる", screen.getX(0), screen.getY(y));
+        y += 60;
+        ctx.fillText("・くっしょん：めぇめぇを１ぴき使い、", screen.getX(0), screen.getY(y));
+        y += 45;
+        ctx.fillText("　　　　　　　とつげきを防ぐ", screen.getX(0), screen.getY(y));
+        y += 45;
+        ctx.fillText("　　　　　　　　※めぇめぇを消費しない", screen.getX(0), screen.getY(y));
+        y += 60;
+        ctx.fillText("スーパー", screen.getX(900/20), screen.getY(y-20));
+        ctx.fillText("とつげき", screen.getX(900/20), screen.getY(y+20));
+        ctx.font = `bold ${screen.getX(900 / 20)}px sans-serif `;
+        ctx.fillText("・　　　　　：めぇめぇを３ひき消費し、", screen.getX(0), screen.getY(y));
+        y+= 45;
+        ctx.fillText("　　　　　　　相手のえさを食べる", screen.getX(0), screen.getY(y));
+        y+= 45;
+        ctx.fillText("　　　　　　　くっしょんを無視できる", screen.getX(0), screen.getY(y));
+        y += 80;
+        ctx.fillText("お互いのめぇれぇが同じ場合は、", screen.getX(x), screen.getY(y));
+        y+= 45;
+        ctx.fillText("どちらのえさも減りません。", screen.getX(x), screen.getY(y));
+        y += 80;
+        ctx.fillStyle = "darkred";
+        ctx.fillText("めぇめぇに的確にめぇれぇを出し、", screen.getX(x), screen.getY(y));
+        y += 45;
+        ctx.fillText("牧場の覇者となろう", screen.getX(x), screen.getY(y));
     }
 }
 
@@ -192,10 +293,6 @@ class EndButton extends Button {
         this.click = false;
         this.addEventListener("click", (e) => {
             this.click = true;
-            const synth = new WebAudioTinySynth();
-            synth.loadMIDI(assets.pi);
-            synth.setMasterVol(0.1);
-            synth.playMIDI();
         });
     }
     update(screen) {
@@ -299,7 +396,7 @@ class SettingNameText extends Button {
 
 class SettingNameButton extends Button {
     constructor(input) {
-        const rect = new Rect(650, 300, 200, 75); 
+        const rect = new Rect(650, 300, 200, 75);
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         super(rect, btnImage, "けってい");
         this.input = input;
@@ -330,11 +427,20 @@ class GameScene extends Scene {
             if (i == 12) { i += 6 }
             this.addGameObject(new Saku(new Rect(i * 30, 600 - 15, 30, 30)));
         }
-        this.addGameObject(new NameText(game.player.name, 900 - game.player.name.length*50, 1150));
-        this.addGameObject(new NameText(game.enemy.name, 0, 50));
+        this.UI = [
+            new NameText(game.player.name, 900 - game.player.name.length * 50, 1150),
+            new NameText(game.enemy.name, 0, 50)
+        ]
+        this.UI.forEach((ui) => {
+            this.addGameObject(ui);
+        });
     }
 
     nextTurn() {
+        this.UI.forEach((ui) => {
+            this.removeGameObject(ui);
+            this.addGameObject(ui);
+        });
         this.addGameObject(new CountText(383, 675));
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         for (let i = 0; i < game.acts.length; i++) {
@@ -366,10 +472,6 @@ class ActionButton extends Button {
             if (game.act == "") {
                 socket.emit("act", this.act);
             }
-            const synth = new WebAudioTinySynth();
-            synth.loadMIDI(assets.pi);
-            synth.setMasterVol(0.1);
-            synth.playMIDI();
         });
     }
     update(screen) {
