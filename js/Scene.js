@@ -7,7 +7,7 @@ class BGM {
     }
     play() {
         clearInterval(this._interval);
-        this._interval = setInterval(this._loop.bind(this), 70000);
+        this._interval = setInterval(this._loop.bind(this), 60000);
         this._loop();
     }
 
@@ -22,7 +22,7 @@ class TitleScene extends Scene {
     constructor() {
         super();
         const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
-        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        Sogen(this);
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         this.addGameObject(new LoginText());
         this.addGameObject(new TitleText());
@@ -39,13 +39,13 @@ class TitleText extends GameObject {
     render(screen) {
         const ctx = screen.ctx;
         ctx.fillStyle = "orange";
-        ctx.font = `bold ${screen.getX(600/4)}px sans-serif `;
+        ctx.font = `bold ${screen.getX(600 / 4)}px sans-serif `;
         ctx.shadowOffsetX = 3;
         ctx.shadowOffsetY = 3;
         ctx.shadowColor = "rgba(0,0,0,0.3)";
         ctx.fillText("大集合", screen.getX(150), screen.getY(500));
         ctx.fillStyle = "gold";
-        ctx.fillText("★", screen.getY(150 + 600/4*3), screen.getY(500));
+        ctx.fillText("★", screen.getY(150 + 600 / 4 * 3), screen.getY(500));
         ctx.fillStyle = "blue";
         ctx.font = `bold ${screen.getX(800 / 4)}px sans-serif `;
         ctx.fillText("サモンズ", screen.getX(50), screen.getY(750));
@@ -140,14 +140,13 @@ class HelpButton extends Button {
 class HelpScene extends Scene {
     constructor() {
         super();
-        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
-        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        Sogen(this);
         this.addGameObject(new HelpText());
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         const memeImgae = new Texture(new Rect(0, 0, 64, 64), assets.meme);
-        this.addGameObject(new Sprite(new Rect(10+45*4, 900/8+100, 60, 60), memeImgae));
+        this.addGameObject(new Sprite(new Rect(10 + 45 * 4, 900 / 8 + 100, 60, 60), memeImgae));
         const bananaImgae = new Texture(new Rect(0, 0, 16, 16), assets.banana);
-        this.addGameObject(new Sprite(new Rect(20+45*2, 900/8+155, 50, 50), bananaImgae));
+        this.addGameObject(new Sprite(new Rect(20 + 45 * 2, 900 / 8 + 155, 50, 50), bananaImgae));
         this.addGameObject(new EndButton(new Rect(300, 1400, 300, 150), btnImage, "タイトルへ"));
     }
 }
@@ -168,11 +167,11 @@ class HelpText extends GameObject {
         ctx.fillStyle = "blue";
         ctx.fillText("大集合", screen.getX(x), screen.getY(y));
         ctx.fillStyle = "yellow";
-        ctx.fillText("★", screen.getX(x+900/20*3), screen.getY(y));
+        ctx.fillText("★", screen.getX(x + 900 / 20 * 3), screen.getY(y));
         ctx.fillStyle = "blue";
-        ctx.fillText("サモンズめぇめぇ", screen.getX(x+900/20*4), screen.getY(y));
+        ctx.fillText("サモンズめぇめぇ", screen.getX(x + 900 / 20 * 4), screen.getY(y));
         ctx.fillStyle = "darkgreen";
-        ctx.fillText("とは、", screen.getX(x+900/20*12), screen.getY(y));
+        ctx.fillText("とは、", screen.getX(x + 900 / 20 * 12), screen.getY(y));
         y += 60;
         ctx.font = `bold ${screen.getX(900 / 20)}px sans-serif `;
         ctx.fillText("めぇめぇ　にめぇれぇして、牧場の", screen.getX(x), screen.getY(y));
@@ -199,23 +198,23 @@ class HelpText extends GameObject {
         y += 45;
         ctx.fillText("　　　　　　　　※めぇめぇを消費しない", screen.getX(0), screen.getY(y));
         y += 60;
-        ctx.fillText("スーパー", screen.getX(900/20), screen.getY(y-20));
-        ctx.fillText("とつげき", screen.getX(900/20), screen.getY(y+20));
+        ctx.fillText("スーパー", screen.getX(900 / 20), screen.getY(y - 20));
+        ctx.fillText("とつげき", screen.getX(900 / 20), screen.getY(y + 20));
         ctx.font = `bold ${screen.getX(900 / 20)}px sans-serif `;
         ctx.fillText("・　　　　　：めぇめぇを３ひき消費し、", screen.getX(0), screen.getY(y));
-        y+= 45;
+        y += 45;
         ctx.fillText("　　　　　　　相手のえさを食べる", screen.getX(0), screen.getY(y));
-        y+= 45;
+        y += 45;
         ctx.fillText("　　　　　　　くっしょんを無視できる", screen.getX(0), screen.getY(y));
         y += 80;
         ctx.fillText("お互いのめぇれぇが同じ場合は、", screen.getX(x), screen.getY(y));
-        y+= 45;
+        y += 45;
         ctx.fillText("どちらのえさも減りません。", screen.getX(x), screen.getY(y));
         y += 80;
         ctx.fillStyle = "darkred";
-        ctx.fillText("めぇめぇに的確にめぇれぇを出し、", screen.getX(x), screen.getY(y));
+        ctx.fillText("めぇめぇにじょうずにめぇれぇをだして", screen.getX(x), screen.getY(y));
         y += 45;
-        ctx.fillText("牧場の覇者となろう", screen.getX(x), screen.getY(y));
+        ctx.fillText("　　　すべてのえさを手に入れよう！", screen.getX(x), screen.getY(y));
     }
 }
 
@@ -223,8 +222,7 @@ class WaitScene extends Scene {
     constructor() {
         super();
         socket.emit('invite', "come on");
-        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
-        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        Sogen(this);
         this.waitText = new WaitText();
         this.addGameObject(this.waitText);
     }
@@ -274,8 +272,7 @@ class WaitMatchingText extends GameObject {
 class EndScene extends Scene {
     constructor(result) {
         super();
-        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
-        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        Sogen(this);
         if (result == "win") {
             this.addGameObject(new WinText());
         } else {
@@ -335,8 +332,7 @@ class SettingScene extends Scene {
         input.value = game.name;
         input.style.display = "none";
         this.input = input;
-        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
-        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        Sogen(this);
         this.addGameObject(new SettingNameLabelText());
         this.addGameObject(new SettingNameText(input));
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
@@ -421,8 +417,7 @@ class GameScene extends Scene {
     constructor() {
         super();
         console.log("game")
-        const sogenImgae = new Texture(new Rect(0, 0, 64, 64), assets.sogen);
-        this.addGameObject(new Sprite(new Rect(0, 0, 900, 1600), sogenImgae));
+        Sogen(this);
         for (let i = 0; i < 30; i++) {
             if (i == 12) { i += 6 }
             this.addGameObject(new Saku(new Rect(i * 30, 600 - 15, 30, 30)));
@@ -527,6 +522,19 @@ class Saku extends Sprite {
         super(rect, sakuImage)
     }
 }
+
+const Sogen = (scene) => {
+    const sogenImgae = new Texture(new Rect(0, 0, 16, 16), assets.sogen);
+    scene.addGameObject(new Sprite(new Rect(0, 0, 450, 450), sogenImgae));
+    scene.addGameObject(new Sprite(new Rect(450, 0, 450, 450), sogenImgae));
+    scene.addGameObject(new Sprite(new Rect(0, 450, 450, 450), sogenImgae));
+    scene.addGameObject(new Sprite(new Rect(450, 450, 450, 450), sogenImgae));
+    scene.addGameObject(new Sprite(new Rect(0, 900, 450, 450), sogenImgae));
+    scene.addGameObject(new Sprite(new Rect(450, 900, 450, 450), sogenImgae));
+    scene.addGameObject(new Sprite(new Rect(0, 1350, 450, 450), sogenImgae));
+    scene.addGameObject(new Sprite(new Rect(450, 1350, 450, 450), sogenImgae));
+}
+
 
 class Banana extends Sprite {
     constructor(rect) {
