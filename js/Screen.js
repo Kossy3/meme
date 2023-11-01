@@ -26,10 +26,10 @@ class Screen {
         }, false);
     }
     getX(x) {
-        return x / this.w * this._c.width;
+        return Math.ceil(x / this.w * this._c.width);
     }
     getY(y) {
-        return y / this.h * this._c.height;
+        return Math.ceil(y / this.h * this._c.height);
     }
     _resize() {
         this._c.width = this._content.clientWidth;
