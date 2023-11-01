@@ -14,7 +14,14 @@ class Game {
             "call": "　よぶ　",
             "atk": "とつげき",
             "dfn": "くっしょん",
-            "spAtk": "スーパーとつげき"
+            "spAtk": "スーパーとつげき",
+            "dxAtk": "デラックスとつげき",
+            "heso": "へそくり",
+            "dbAtk": "ダブルとつげき", 
+            "ult": "いっせいとつげき", 
+            "spy": "　すぱい　", 
+            "spDfn": "スーパーくっしょん", 
+            "wairo": " わいろ "
         }
         this.name = "";
         this.winCount = 0;
@@ -42,10 +49,27 @@ class Player {
             this.meme.splice(0, 1);
         }
     }
+    dxAtk(success) {
+        this.meme[0].dxAtk(success);
+        this.meme.splice(0, 1);
+    }
     dfn(success) {
         this.meme[0].dfn(success);
     }
-    damage() {
-        this.banana[this.banana.length-1].damage();
+    heso(success) {
+        for (let i=0; i < 2; i++){
+            this.meme[0].heso(success);
+            this.meme.splice(0, 1);
+        }
+    }
+    damage(n) {
+        for (let i=1; i <= n; i++) {
+            this.banana[this.banana.length-i].damage();
+        }   
+    }
+
+    spy(success) {
+        this.meme[0].spy(success);
+        this.meme.splice(0, 1);
     }
 }

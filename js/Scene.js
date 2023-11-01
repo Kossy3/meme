@@ -561,7 +561,50 @@ class Banana extends Sprite {
     }
     damage() {
         this._damaged = 1;
-        console.log("nana")
+    }
+}
+
+
+class HesoBanana extends Sprite {
+    constructor(rect, myMeme) {
+        const bananaImage = new Texture(new Rect(0, 0, 16, 16), assets.banana);
+        super(rect, bananaImage)
+        this._turn = game.turn;
+        this._myMeme = myMeme;
+        this._cnt = 0;
+    }
+    update() {
+        if (game.turn != this._turn) {
+            this.dispatchEvent("destroy", new GameEvent(this));
+        }
+        if (this._myMeme) {
+            this.x += (0 - this.x + 100 * (game.player.life-1)) / (60 - this._cnt);
+            this.y += (1100 - this.y) / (60 - this._cnt);
+        } else {
+            this.x += (900 - this.x - 100 * (game.enemy.life)) / (60 - this._cnt);
+            this.y += (0 - this.y) / (60 - this._cnt);
+        }
+        if (this._cnt < 59) {
+            this._cnt ++;
+        }
+    }
+}
+
+class Glass extends Sprite {
+    constructor(meme) {
+        const glassImage = new Texture(new Rect(0, 0, 8, 8), assets.glass);
+        super(new Rect(0, 0, 50, 50), glassImage)
+        this._turn = game.turn;
+        this._meme = meme;
+        this._cnt = 0;
+    }
+    update() {
+        if (game.turn == 2 + this._turn) {
+            this.dispatchEvent("destroy", new GameEvent(this));
+            this.dispatchEvent("destroy", new GameEvent(this._meme));
+        }
+        this.x = this._meme.x + 32;
+        this.y = this._meme.y + 46;
     }
 }
 
@@ -612,6 +655,23 @@ class Meme extends Sprite {
             this._dfn = false;
             this.texture = new Texture(new Rect(0, 0, 64, 64), assets.meme);
         }, 4000);
+    }
+    dxAtk(success){
+        console.log(this.w, this.h);
+        this.w = 300;
+        this.h = 300;
+        this.x -= 50;
+        this.y -= 50;
+        this.atk(success);
+    }
+    heso(success) {
+        this.dispatchEvent("spawn", new GameEvent(new HesoBanana(new Rect(this.x+50, this.y+50, 100, 100), this._myMeme)));
+        this._away = true;
+    }
+    spy(success) {
+        this.dispatchEvent("spawn", new GameEvent(new Glass(this)));
+        this._go = true;
+        this._myMeme = !this._myMeme;
     }
     gotoCenter() {
         if (this._myMeme) {

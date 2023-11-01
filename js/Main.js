@@ -112,11 +112,41 @@ window.onload = () => {
         if (data.enemy.act == "dfn") {
             game.enemy.dfn(data.enemy.success);
         }
+        if (data.player.act == "dxAtk") {
+            game.player.dxAtk(data.player.success);
+        }
+        if (data.enemy.act == "dxAtk") {
+            game.enemy.dxAtk(data.enemy.success);
+        }
+        if (data.player.act == "heso") {
+            game.player.heso(data.player.success);
+        }
+        if (data.enemy.act == "heso") {
+            game.enemy.heso(data.enemy.success);
+        }
+        if (data.player.act == "dbAtk") {
+            game.player.atk(2, data.player.success);
+        }
+        if (data.enemy.act == "dbAtk") {
+            game.enemy.atk(2, data.enemy.success);
+        }
+        if (data.player.act == "ult") {
+            game.player.atk(10, data.player.success);
+        }
+        if (data.enemy.act == "ult") {
+            game.enemy.atk(10, data.enemy.success);
+        }
+        if (data.player.act == "spy") {
+            game.player.spy(data.player.success);
+        }
+        if (data.enemy.act == "spy") {
+            game.enemy.spy(data.enemy.success);
+        }
         if (game.player.life > data.player.life) {
-            game.player.damage();
+            game.player.damage(game.player.life - data.player.life);
         }
         if (game.enemy.life > data.enemy.life) {
-            game.enemy.damage();
+            game.enemy.damage(game.enemy.life - data.enemy.life);
         }
 
         game.player.life = data.player.life;
