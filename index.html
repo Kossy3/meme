@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-=1, minimum-=1, maximum-=1, user-scalable=no">
@@ -15,11 +16,11 @@
     <style>
         body {
             background-color: black;
+            height: 100svh;
             margin: 0;
         }
 
         #content {
-            margin: auto;
             position: relative;
             overflow: hidden;
             border-radius: 10px;
@@ -29,18 +30,24 @@
         @media screen and (min-aspect-ratio: 9/16) {
             #content {
                 width: auto;
-                height: 100svh;
-                aspect-ratio: 9 / 16;
-            }
-        }
-        @media screen and (max-aspect-ratio: 9/16) {
-            #content {
-                width: 100svw;
-                height: auto;
+                height: 90svh;
+                margin: 5svh auto;
                 aspect-ratio: 9 / 16;
             }
         }
 
+        @media screen and (max-aspect-ratio: 9/16) {
+            body {
+                padding: calc(50svh - 160svw) 0;
+            }
+
+            #content {
+                margin: 0 5svw;
+                width: 90svw;
+                height: auto;
+                aspect-ratio: 9 / 16;
+            }
+        }
     </style>
 </head>
 
