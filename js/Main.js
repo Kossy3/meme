@@ -22,7 +22,7 @@ window.onload = () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({"sess_id": id})
+            body: JSON.stringify({"sess_id": game.id})
         }).then((response) => response.json())
           .then((data)=>{
             socket.emit('login', id);
@@ -31,6 +31,10 @@ window.onload = () => {
             game.name = data.name;
             game.winCount = data.win;
          });
+    });
+    socket.on('error', (msg) => {
+        console.error(msg);
+        alert("Error: " + msg);
     });
     socket.on('invite', (id) => {
         if (game.inviting && id != game.id) {
