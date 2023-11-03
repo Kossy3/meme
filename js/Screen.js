@@ -240,11 +240,13 @@ class Button extends Sprite {
     }
     touchstart() {
         this.istouchstart = true;
+        console.log("touchstart");
     }
     touchend() {
         if (this.istouchstart) {
             this.dispatchEvent("click", new GameEvent(this));
             this.istouchstart = false;
+            console.log("touchend");
         }
     }
     clickcancel() {
