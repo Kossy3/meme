@@ -12,15 +12,15 @@ class Game {
         this.enemy = new Player();
         this.types = {
             "call": "　よぶ　",
-            "atk": "とつげき",
-            "dfn": "くっしょん",
-            "spAtk": "スーパーとつげき",
-            "dxAtk": "デラックスとつげき",
-            "heso": "へそくり",
-            "dbAtk": "ダブルとつげき", 
-            "ult": "いっせいとつげき", 
+            "atk": "　とつげき　",
+            "dfn": "　くっしょん　",
+            "spAtk": "　スーパーとつげき　",
+            "dxAtk": "　デラックスとつげき　",
+            "heso": "　へそくり　",
+            "dbAtk": "　ダブルとつげき　", 
+            "ult": "　いっせいとつげき　", 
             "spy": "　すぱい　", 
-            "spDfn": "スーパーくっしょん", 
+            "spDfn": "　スーパーくっしょん　", 
             "wairo": "　わいろ　"
         }
         this.name = "";

@@ -44,6 +44,9 @@ window.onload = () => {
     socket.on('name', (name) => {
         game.name = name;
     });
+    socket.on('spAct', (types) => {
+        screen.scene.spAct(types);
+    });
     socket.on('start', (enemy) => {
         game.inviting = false;
         game.playing = false;

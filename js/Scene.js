@@ -340,11 +340,28 @@ class SettingScene extends Scene {
         this.addGameObject(new SettingNameLabelText());
         this.addGameObject(new SettingNameText(input));
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
-        this.addGameObject(new EndButton(new Rect(300, 1000, 300, 150), btnImage, "タイトルへ"));
+        this.addGameObject(new EndButton(new Rect(300, 1400, 300, 150), btnImage, "タイトルへ"));
         this.addEventListener("change", (e) => {
             input.remove();
         })
+        this.spActs = Object.keys(game.types).slice(4);
+        this.spActButtons = [];
+        this.addGameObject(new SettingActionLabel(input));
+        for (let i = 0; i < this.spActs.length; i++) {
+            console.log(this.spActs[i]);
+            const btn = new SettingActionButton(new Rect(300 * (i % 3), 600 + 150 * Math.floor(i / 3), 290, 150), btnImage, this.spActs[i]);
+            this.addGameObject(btn);
+            this.spActButtons.push(btn);
+        }
+        socket.emit("setSpAct", "");
     }
+
+    spAct(types) {
+        this.spActButtons.forEach((btn) => {
+            btn.select(types.includes(btn.type));
+        })
+    }
+
     update(screen) {
         super.update(screen);
         const rect = screen._content.getBoundingClientRect();
@@ -414,6 +431,45 @@ class SettingNameButton extends Button {
             socket.emit('name', this.input.value);
             this.click = false;
         }
+    }
+}
+
+class SettingActionLabel extends GameObject {
+    render(screen) {
+        const ctx = screen.ctx;
+        ctx.fillStyle = "green";
+        ctx.font = `bold ${screen.getX(50)}px sans-serif `;
+        ctx.fillText("たつじんめぇれぇ(2つまで)", screen.getX(50), screen.getY(550));
+    }
+}
+
+class SettingActionButton extends Button {
+    constructor(rect, texture, type) {
+        super(rect, texture, game.types[type]);
+        this.type = type;
+        this.spAct = game.types[type];
+        this.selected = false;
+        this.addEventListener("click", (e) => {
+            socket.emit("setSpAct", this.type);
+        });
+    }
+    select(bool) {
+        this.selected = bool;
+    }
+    render(screen) {
+        const ctx = screen.ctx;
+        super.render(screen);
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.fillStyle = "green";
+        const px = Math.min(Math.max(screen.getX(this.w / this.text.length), screen.getX(16)));
+        ctx.font = `bold ${px}px sans-serif `;
+        if (this.selected) {
+            ctx.fillStyle = "red";
+        } else {
+            ctx.fillStyle = "green";
+        }
+        ctx.fillText(this.text, screen.getX(this.x), screen.getY(this.y + px / 2 + this.h / 2), this.w);
     }
 }
 
