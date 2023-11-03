@@ -22,6 +22,7 @@ class Screen {
             this.scene.dispatchEvent("touchstart", new GameEvent(this, e));
         }, false);
         window.addEventListener("touchend", e => {
+            e.preventDefault();
             this.scene.dispatchEvent("touchend", new GameEvent(this, e));
         }, false);
     }
