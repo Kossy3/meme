@@ -472,8 +472,8 @@ class SettingActionHelpText extends GameObject {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
         ctx.font = `bold ${screen.getX(30)}px sans-serif `;
-        for (let i=0; i<this.help.length ; i+=28){
-            const text = this.help.slice(i, i+28);
+        for (let i=0; i<this.help.length ; i+=27){
+            const text = this.help.slice(i, i+27);
             ctx.fillText(text, screen.getX(50), screen.getY(this.y + i*3));
         }
         
