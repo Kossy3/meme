@@ -229,13 +229,13 @@ class Button extends Sprite {
     }
     mousedown() {
         this.ismousedown = true;
-        //console.log("down")
+        console.log("down")
     }
     mouseup() {
         if (this.ismousedown) {
             this.dispatchEvent("click", new GameEvent(this));
             this.ismousedown = false;
-            //console.log("up")
+            console.log("up")
         }
     }
     touchstart() {

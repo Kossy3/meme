@@ -348,7 +348,6 @@ class SettingScene extends Scene {
         this.spActButtons = [];
         this.addGameObject(new SettingActionLabel(input));
         for (let i = 0; i < this.spActs.length; i++) {
-            console.log(this.spActs[i]);
             const btn = new SettingActionButton(new Rect(300 * (i % 3), 300 + 150 * Math.floor(i / 3), 290, 150), btnImage, this.spActs[i]);
             this.addGameObject(btn);
             this.spActButtons.push(btn);
