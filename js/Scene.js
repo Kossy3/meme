@@ -349,14 +349,14 @@ class SettingScene extends Scene {
         this.addGameObject(new SettingActionLabel(input));
         for (let i = 0; i < this.spActs.length; i++) {
             console.log(this.spActs[i]);
-            const btn = new SettingActionButton(new Rect(300 * (i % 3), 600 + 150 * Math.floor(i / 3), 290, 150), btnImage, this.spActs[i]);
+            const btn = new SettingActionButton(new Rect(300 * (i % 3), 300 + 150 * Math.floor(i / 3), 290, 150), btnImage, this.spActs[i]);
             this.addGameObject(btn);
             this.spActButtons.push(btn);
         }
         socket.emit("setSpAct", "");
         this.helps = []
-        this.helps.push(new SettingActionHelpText(1100));
-        this.helps.push(new SettingActionHelpText(1250));
+        this.helps.push(new SettingActionHelpText(800));
+        this.helps.push(new SettingActionHelpText(1050));
         this.addGameObject(this.helps[0]);
         this.addGameObject(this.helps[1]);
     }
@@ -365,7 +365,7 @@ class SettingScene extends Scene {
         this.spActButtons.forEach((btn) => {
             btn.select(types.includes(btn.type));
         })
-        for(let i=0; i<2; i++) {
+        for(let i=0; i<types.length; i++) {
             this.helps[i].setHelp(types[i]);
         }
     }
@@ -447,7 +447,7 @@ class SettingActionLabel extends GameObject {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
         ctx.font = `bold ${screen.getX(50)}px sans-serif `;
-        ctx.fillText("たつじんめぇれぇ(2つまで)", screen.getX(50), screen.getY(550));
+        ctx.fillText("たつじんめぇれぇ(2つまで)", screen.getX(50), screen.getY(250));
     }
 }
 
