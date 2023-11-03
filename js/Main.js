@@ -95,52 +95,64 @@ window.onload = () => {
             game.enemy.meme.push(meme);
         }
         if (data.player.act == "atk") {
-            game.player.atk(1, data.player.success);
+            game.player.atk(1, data.player);
         }
         if (data.enemy.act == "atk") {
-            game.enemy.atk(1, data.enemy.success);
+            game.enemy.atk(1, data.enemy);
         }
         if (data.player.act == "spAtk") {
-            game.player.atk(3, data.player.success);
+            game.player.atk(3, data.player);
         }
         if (data.enemy.act == "spAtk") {
-            game.enemy.atk(3, data.enemy.success);
+            game.enemy.atk(3, data.enemy);
         }
         if (data.player.act == "dfn") {
-            game.player.dfn(data.player.success);
+            game.player.dfn(data.player);
         }
         if (data.enemy.act == "dfn") {
-            game.enemy.dfn(data.enemy.success);
+            game.enemy.dfn(data.enemy);
         }
         if (data.player.act == "dxAtk") {
-            game.player.dxAtk(data.player.success);
+            game.player.dxAtk(data.player);
         }
         if (data.enemy.act == "dxAtk") {
-            game.enemy.dxAtk(data.enemy.success);
+            game.enemy.dxAtk(data.enemy);
         }
         if (data.player.act == "heso") {
-            game.player.heso(data.player.success);
+            game.player.heso(data.player);
         }
         if (data.enemy.act == "heso") {
-            game.enemy.heso(data.enemy.success);
+            game.enemy.heso(data.enemy);
         }
         if (data.player.act == "dbAtk") {
-            game.player.atk(2, data.player.success);
+            game.player.atk(2, data.player);
         }
         if (data.enemy.act == "dbAtk") {
-            game.enemy.atk(2, data.enemy.success);
+            game.enemy.atk(2, data.enemy);
         }
         if (data.player.act == "ult") {
-            game.player.atk(10, data.player.success);
+            game.player.atk(10, data.player);
         }
         if (data.enemy.act == "ult") {
-            game.enemy.atk(10, data.enemy.success);
+            game.enemy.atk(10, data.enemy);
         }
         if (data.player.act == "spy") {
-            game.player.spy(data.player.success);
+            game.player.spy(data.player);
         }
         if (data.enemy.act == "spy") {
-            game.enemy.spy(data.enemy.success);
+            game.enemy.spy(data.enemy);
+        }
+        if (data.player.act == "spDfn") {
+            game.player.spDfn(data.player);
+        }
+        if (data.enemy.act == "spDfn") {
+            game.enemy.spDfn(data.enemy);
+        }
+        if (data.player.act == "wairo") {
+            game.player.wairo(data.player);
+        }
+        if (data.enemy.act == "wairo") {
+            game.enemy.wairo(data.enemy);
         }
         if (game.player.life > data.player.life) {
             game.player.damage(game.player.life - data.player.life);

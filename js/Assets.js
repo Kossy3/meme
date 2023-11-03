@@ -25,6 +25,7 @@ class Assets {
         new Asset('./data/saku.png', "img", callback("saku"));
         new Asset('./data/banana.png', "img", callback("banana"));
         new Asset('./data/sogen.png', "img", callback("sogen"));
+        new Asset('./data/sp_kushon.png', "img", callback("spkushon"));
         new Asset('./data/kushon.png', "img", callback("kushon"));
         new Asset('./data/button.png', "img", callback("button"));
         new Asset('./data/glass.png', "img", callback("glass"));

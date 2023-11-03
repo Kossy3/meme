@@ -21,7 +21,7 @@ class Game {
             "ult": "いっせいとつげき", 
             "spy": "　すぱい　", 
             "spDfn": "スーパーくっしょん", 
-            "wairo": " わいろ "
+            "wairo": "　わいろ　"
         }
         this.name = "";
         this.winCount = 0;
@@ -43,22 +43,38 @@ class Player {
         this.banana = [];
         this.name = ""
     }
-    atk(n, success) {
+    atk(n, data) {
         for (let i=0; i < n; i++){
-            this.meme[0].atk(success);
+            this.meme[0].atk(data.success);
+            if (data.wairo) {
+                this.meme[0].reciveWairo();
+            }
+            if (game.player != this) {
+                game.player.meme.push(this.meme[0]);
+            } else {
+                game.enemy.meme.push(this.meme[0]);
+            }
             this.meme.splice(0, 1);
         }
     }
-    dxAtk(success) {
-        this.meme[0].dxAtk(success);
+    dxAtk(data) {
+        this.meme[0].dxAtk(data.success);
+        if (data.wairo) {
+            this.meme[0].reciveWairo();
+        }
+        if (game.player != this) {
+            game.player.meme.push(this.meme[0]);
+        } else {
+            game.enemy.meme.push(this.meme[0]);
+        }
         this.meme.splice(0, 1);
     }
-    dfn(success) {
-        this.meme[0].dfn(success);
+    dfn(data) {
+        this.meme[0].dfn(data.success);
     }
-    heso(success) {
+    heso(data) {
         for (let i=0; i < 2; i++){
-            this.meme[0].heso(success);
+            this.meme[0].heso(data.success);
             this.meme.splice(0, 1);
         }
     }
@@ -68,8 +84,16 @@ class Player {
         }   
     }
 
-    spy(success) {
-        this.meme[0].spy(success);
+    spy(data) {
+        this.meme[0].spy(data.success);
+        this.meme.splice(0, 1);
+    }
+    wairo(data) {
+        this.meme[0].wairo();
+        this.meme.splice(0, 1);
+    }
+    spDfn(data) {
+        this.meme[0].spDfn(data.success);
         this.meme.splice(0, 1);
     }
 }

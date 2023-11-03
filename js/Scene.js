@@ -38,7 +38,7 @@ class TitleText extends GameObject {
     }
     render(screen) {
         const ctx = screen.ctx;
-        ctx.fillStyle = "orange";
+        ctx.fillStyle = "#ffa500";
         ctx.font = `bold ${screen.getX(600 / 4)}px sans-serif `;
         ctx.shadowOffsetX = 3;
         ctx.shadowOffsetY = 3;
@@ -46,7 +46,7 @@ class TitleText extends GameObject {
         ctx.fillText("大集合", screen.getX(150), screen.getY(500));
         ctx.fillStyle = "gold";
         ctx.fillText("★", screen.getY(150 + 600 / 4 * 3), screen.getY(500));
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = "#FFFFE0";
         ctx.font = `bold ${screen.getX(800 / 4)}px sans-serif `;
         ctx.fillText("サモンズ", screen.getX(50), screen.getY(750));
         ctx.fillText("めぇめぇ", screen.getX(50), screen.getY(1000));
@@ -64,8 +64,8 @@ class LoginText extends GameObject {
             this._destroy();
             const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
             this._spawn(new StartButton(new Rect(300, 1200, 300, 150), btnImage, "　はじめる　"));
-            this._spawn(new SettingButton(new Rect(50, 1200, 200, 150), btnImage, "　設定　"));
-            this._spawn(new HelpButton(new Rect(650, 1200, 200, 150), btnImage, "あそびかた"));
+            this._spawn(new SettingButton(new Rect(50, 1200, 200, 150), btnImage, "　せってい　"));
+            this._spawn(new HelpButton(new Rect(650, 1200, 200, 150), btnImage, "　あそびかた　"));
         }
         this._count++;
         if (this._count > 5) {
@@ -144,7 +144,7 @@ class HelpScene extends Scene {
         this.addGameObject(new HelpText());
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         const memeImgae = new Texture(new Rect(0, 0, 64, 64), assets.meme);
-        this.addGameObject(new Sprite(new Rect(10 + 45 * 4, 900 / 8 + 100, 60, 60), memeImgae));
+        this.addGameObject(new Sprite(new Rect(70 + 45 * 4, 900 / 8 + 100, 60, 60), memeImgae));
         const bananaImgae = new Texture(new Rect(0, 0, 16, 16), assets.banana);
         this.addGameObject(new Sprite(new Rect(20 + 45 * 2, 900 / 8 + 155, 50, 50), bananaImgae));
         this.addGameObject(new EndButton(new Rect(300, 1400, 300, 150), btnImage, "タイトルへ"));
@@ -157,6 +157,7 @@ class HelpText extends GameObject {
         const ctx = screen.ctx;
         let y = 0;
         let x = 20;
+        
         ctx.fillStyle = "darkblue";
         y += 900 / 8;
         ctx.font = `bold ${screen.getX(900 / 8)}px sans-serif `;
@@ -164,25 +165,28 @@ class HelpText extends GameObject {
 
         ctx.font = `bold ${screen.getX(900 / 20)}px sans-serif `;
         y += 90;
-        ctx.fillStyle = "blue";
-        ctx.fillText("大集合", screen.getX(x), screen.getY(y));
+        ctx.fillStyle = "#FFB900";
+        ctx.fillText("      大集合", screen.getX(x), screen.getY(y));
         ctx.fillStyle = "yellow";
-        ctx.fillText("★", screen.getX(x + 900 / 20 * 3), screen.getY(y));
-        ctx.fillStyle = "blue";
-        ctx.fillText("サモンズめぇめぇ", screen.getX(x + 900 / 20 * 4), screen.getY(y));
+        ctx.fillText("      ★", screen.getX(x + 900 / 20 * 3), screen.getY(y));
+        ctx.fillStyle = "#FFFFE0";
+        ctx.fillText("      サモンズめぇめぇ", screen.getX(x + 900 / 20 * 4), screen.getY(y));
         ctx.fillStyle = "darkgreen";
-        ctx.fillText("とは、", screen.getX(x + 900 / 20 * 12), screen.getY(y));
+        ctx.shadowColor = "#FEEDC1";
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
+        ctx.fillText("      とは、", screen.getX(x + 900 / 20 * 12), screen.getY(y));
         y += 60;
         ctx.font = `bold ${screen.getX(900 / 20)}px sans-serif `;
-        ctx.fillText("めぇめぇ　にめぇれぇして、牧場の", screen.getX(x), screen.getY(y));
+        ctx.fillText("    めぇめぇ　にめぇれぇして、牧場の", screen.getX(x), screen.getY(y));
         y += 45;
         ctx.fillText("えさ　をうばいあうオンラインゲームです", screen.getX(x), screen.getY(y));
         y += 60;
-        ctx.fillText("10秒に１度、自分のめぇめぇにめぇれぇ", screen.getX(x), screen.getY(y));
+        ctx.fillText(" 10秒に１度、自分のめぇめぇにめぇれぇ", screen.getX(x), screen.getY(y));
         y += 45;
         ctx.fillText("をすることができます。相手のえさを先に", screen.getX(x), screen.getY(y));
         y += 45;
-        ctx.fillText("食べつくしたほうが勝ちです。", screen.getX(x), screen.getY(y));
+        ctx.fillText("        食べつくしたほうが勝ちです。", screen.getX(x), screen.getY(y));
         y += 100;
         ctx.fillText("【めぇれぇリスト】", screen.getX(x), screen.getY(y));
         y += 45;
@@ -207,12 +211,12 @@ class HelpText extends GameObject {
         y += 45;
         ctx.fillText("　　　　　　　くっしょんを無視できる", screen.getX(0), screen.getY(y));
         y += 80;
-        ctx.fillText("お互いのめぇれぇが同じ場合は、", screen.getX(x), screen.getY(y));
+        ctx.fillText("      お互いのめぇれぇが同じ場合は、", screen.getX(x), screen.getY(y));
         y += 45;
-        ctx.fillText("どちらのえさも減りません。", screen.getX(x), screen.getY(y));
+        ctx.fillText("        どちらのえさも減りません。", screen.getX(x), screen.getY(y));
         y += 80;
         ctx.fillStyle = "darkred";
-        ctx.fillText("めぇめぇにじょうずにめぇれぇをだして", screen.getX(x), screen.getY(y));
+        ctx.fillText("めぇめぇにじょうずにめぇれぇをだして", screen.getX(x+25), screen.getY(y));
         y += 45;
         ctx.fillText("　　　すべてのえさを手に入れよう！", screen.getX(x), screen.getY(y));
     }
@@ -247,7 +251,7 @@ class WaitText extends GameObject {
     }
     render(screen) {
         const ctx = screen.ctx;
-        ctx.fillStyle = "green";
+        ctx.fillStyle = "#FFFFE0";
         ctx.font = `bold ${screen.getX(900 / 8)}px sans-serif `;
         ctx.fillText("対戦相手を", screen.getX(900 / 5), screen.getY(1000));
         ctx.fillText("探しています" + this.txt, screen.getX(900 / 5 - 900 / 8), screen.getY(1100));
@@ -578,15 +582,32 @@ class HesoBanana extends Sprite {
             this.dispatchEvent("destroy", new GameEvent(this));
         }
         if (this._myMeme) {
-            this.x += (0 - this.x + 100 * (game.player.life-1)) / (60 - this._cnt);
+            this.x += (0 - this.x + 100 * (game.player.life - 1)) / (60 - this._cnt);
             this.y += (1100 - this.y) / (60 - this._cnt);
         } else {
             this.x += (900 - this.x - 100 * (game.enemy.life)) / (60 - this._cnt);
             this.y += (0 - this.y) / (60 - this._cnt);
         }
         if (this._cnt < 59) {
-            this._cnt ++;
+            this._cnt++;
         }
+    }
+}
+class WairoBanana extends Sprite {
+    constructor(meme) {
+        const bananaImage = new Texture(new Rect(0, 0, 16, 16), assets.banana);
+          super(new Rect(0, 0, 50, 50), bananaImage)
+        this._turn = game.turn;
+        this._meme = meme;
+        this._cnt = 0;
+    }
+    update() {
+        if (game.turn != this._turn) {
+            this.dispatchEvent("destroy", new GameEvent(this));
+            this.dispatchEvent("destroy", new GameEvent(this._meme));
+        }
+        this.x = this._meme.x + 32;
+        this.y = this._meme.y + 46;
     }
 }
 
@@ -637,6 +658,8 @@ class Meme extends Sprite {
         this._go = false;
         this._atk = false;
         this._dfn = false;
+        this._spDfn = false;
+        this._wairo = false;
         this._angle = 0;
         this._away = false;
         this._awayX = Math.random() * 900;
@@ -656,7 +679,7 @@ class Meme extends Sprite {
             this.texture = new Texture(new Rect(0, 0, 64, 64), assets.meme);
         }, 4000);
     }
-    dxAtk(success){
+    dxAtk(success) {
         console.log(this.w, this.h);
         this.w = 300;
         this.h = 300;
@@ -664,14 +687,27 @@ class Meme extends Sprite {
         this.y -= 50;
         this.atk(success);
     }
+    reciveWairo() {
+        this._wairo = true;
+        this._myMeme = !this._myMeme;
+    }
+    wairo() {
+        this.dispatchEvent("spawn", new GameEvent(new WairoBanana(this)));
+        this._go = true;
+    }
     heso(success) {
-        this.dispatchEvent("spawn", new GameEvent(new HesoBanana(new Rect(this.x+50, this.y+50, 100, 100), this._myMeme)));
+        this.dispatchEvent("spawn", new GameEvent(new HesoBanana(new Rect(this.x + 50, this.y + 50, 100, 100), this._myMeme)));
         this._away = true;
     }
     spy(success) {
         this.dispatchEvent("spawn", new GameEvent(new Glass(this)));
         this._go = true;
         this._myMeme = !this._myMeme;
+    }
+    spDfn(success) {
+        this._spDfn = true;
+        this.dfn(success);
+        this.texture = new Texture(new Rect(0, 0, 64, 64), assets.spkushon);
     }
     gotoCenter() {
         if (this._myMeme) {
@@ -714,6 +750,13 @@ class Meme extends Sprite {
                 this._go = false;
                 this._cnt = 0;
             }
+            return;
+        }
+        if (this._wairo) {
+            this._wairo = false;
+            this._atk = false;
+            this._dfn = false;
+            this._away = false;
             return;
         }
         if (this._away > 0) {
@@ -760,9 +803,10 @@ class Meme extends Sprite {
     }
 
     render(screen) {
+        const ctx = screen.ctx;
         if (this._angle > 0) {
             this._angle += 10;
-            const ctx = screen.ctx;
+            
             const TO_RADIANS = Math.PI / 180;
             // コンテキストを保存する
             ctx.save();
@@ -776,6 +820,7 @@ class Meme extends Sprite {
                 rect.w, rect.h,
                 -screen.getX(this.w) / 2, -screen.getY(this.h) / 2,
                 screen.getX(this.w), screen.getY(this.h));
+
             // コンテキストを元に戻す
             ctx.restore();
         } else {
