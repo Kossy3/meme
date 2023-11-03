@@ -211,9 +211,13 @@ class HelpText extends GameObject {
         y += 45;
         ctx.fillText("　　　　　　　くっしょんを無視できる", screen.getX(0), screen.getY(y));
         y += 80;
-        ctx.fillText("      お互いのめぇれぇが同じ場合は、", screen.getX(x), screen.getY(y));
+        ctx.fillText("    とつげき、スーパーとつげき同士は", screen.getX(x), screen.getY(y));
         y += 45;
-        ctx.fillText("        どちらのえさも減りません。", screen.getX(x), screen.getY(y));
+        ctx.fillText("   相殺されてどちらのえさも減りません。", screen.getX(x), screen.getY(y));
+        y += 80;
+        ctx.fillText("　ゲームに慣れたら、「せってい」から", screen.getX(x), screen.getY(y));
+        y += 45;
+        ctx.fillText(" 「たつじんめぇれぇ」も選んでみてね。", screen.getX(x), screen.getY(y));
         y += 80;
         ctx.fillStyle = "darkred";
         ctx.fillText("めぇめぇにじょうずにめぇれぇをだして", screen.getX(x+25), screen.getY(y));
