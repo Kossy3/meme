@@ -354,18 +354,26 @@ class SettingScene extends Scene {
             this.spActButtons.push(btn);
         }
         socket.emit("setSpAct", "");
+        this.helps = []
+        this.helps.push(new SettingActionHelpText(1100));
+        this.helps.push(new SettingActionHelpText(1250));
+        this.addGameObject(this.helps[0]);
+        this.addGameObject(this.helps[1]);
     }
 
     spAct(types) {
         this.spActButtons.forEach((btn) => {
             btn.select(types.includes(btn.type));
         })
+        for(let i=0; i<2; i++) {
+            this.helps[i].setHelp(types[i]);
+        }
     }
 
     update(screen) {
         super.update(screen);
         const rect = screen._content.getBoundingClientRect();
-        this.input.style.top = `${rect.top + screen.getY(300)}px`;
+        this.input.style.top = `${rect.top + screen.getY(50)}px`;
         this.input.style.left = `${rect.left + screen.getX(300)}px`;
         this.input.style.width = `${screen.getX(300)}px`;
         this.input.style.height = `${screen.getX(50)}px`;
@@ -378,14 +386,14 @@ class SettingNameLabelText extends GameObject {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
         ctx.font = `bold ${screen.getX(50)}px sans-serif `;
-        ctx.fillText("おなまえ", screen.getX(50), screen.getY(350));
+        ctx.fillText("おなまえ", screen.getX(50), screen.getY(100));
     }
 }
 
 class SettingNameText extends Button {
     constructor(input) {
         const btnImage = new Texture(new Rect(0, 0, 16, 16), new Image());
-        const rect = new Rect(300, 300, game.name.length * 50, 100);
+        const rect = new Rect(300, 50, game.name.length * 50, 100);
         super(rect, btnImage, "");
         this.input = input;
         this.click = false;
@@ -407,13 +415,13 @@ class SettingNameText extends Button {
         const ctx = screen.ctx;
         ctx.fillStyle = "green";
         ctx.font = `bold ${screen.getX(50)}px sans-serif `;
-        ctx.fillText(game.name, screen.getX(300), screen.getY(350));
+        ctx.fillText(game.name, screen.getX(300), screen.getY(100));
     }
 }
 
 class SettingNameButton extends Button {
     constructor(input) {
-        const rect = new Rect(650, 300, 200, 75);
+        const rect = new Rect(650, 50, 200, 75);
         const btnImage = new Texture(new Rect(0, 0, 16, 16), assets.button);
         super(rect, btnImage, "けってい");
         this.input = input;
@@ -440,6 +448,36 @@ class SettingActionLabel extends GameObject {
         ctx.fillStyle = "green";
         ctx.font = `bold ${screen.getX(50)}px sans-serif `;
         ctx.fillText("たつじんめぇれぇ(2つまで)", screen.getX(50), screen.getY(550));
+    }
+}
+
+class SettingActionHelpText extends GameObject {
+    constructor(y) {
+        super();
+        this.y = y;
+        this.helpTexts = {
+            "dxAtk": "デラックスとつげき：えさ1コとめぇめぇ1ぴきを消費し、めぇめぇデラックスを作ってとつげきさせる。このとつげきはスーパーとつげきとみなされる。",
+            "heso": "へそくり：めぇめぇを2ひき消費し、えさを1コ補充する。",
+            "dbAtk": "ダブルとつげき：めぇめぇ2ひきでとつげきする。相手のとつげきを無視できる。", 
+            "ult": "いっせいとつげき：めぇめぇ10ぴきでとつげきし、相手のえさを全て食べつくす。", 
+            "spy": "すぱい：めぇめぇを1ぴき消費し、相手の牧場に派遣する。相手は次のめぇれぇでくっしょんを使えない。", 
+            "spDfn": "スーパーくっしょん：めぇめぇ1ぴきを消費し、相手のとつげき、ダブルとつげきをはねかえす。", 
+            "wairo": "わいろ：えさ1コとめぇめぇ1ぴきを消費し、とつげき、ダブルとつげき、スーパーとつげき、デラックスとつげき、いっせいとつげきしてきた相手のめぇめぇを買収する。"
+        }
+        this.help = "";
+    }
+    setHelp(type) {
+        this.help = this.helpTexts[type];
+    }
+    render(screen) {
+        const ctx = screen.ctx;
+        ctx.fillStyle = "green";
+        ctx.font = `bold ${screen.getX(30)}px sans-serif `;
+        for (let i=0; i<this.help.length ; i+=28){
+            const text = this.help.slice(i, i+28);
+            ctx.fillText(text, screen.getX(50), screen.getY(this.y + i*3));
+        }
+        
     }
 }
 
