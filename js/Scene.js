@@ -805,6 +805,9 @@ class Meme extends Sprite {
         this._spDfn = true;
         this.dfn(success);
         this.texture = new Texture(new Rect(0, 0, 64, 64), assets.spkushon);
+        setTimeout(() => {
+            this._destroy();
+        }, 3000);
     }
     gotoCenter() {
         if (this._myMeme) {
