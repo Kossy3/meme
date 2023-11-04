@@ -711,10 +711,9 @@ class WairoBanana extends Sprite {
 class Glass extends Sprite {
     constructor(meme) {
         const glassImage = new Texture(new Rect(0, 0, 8, 8), assets.glass);
-        super(new Rect(0, 0, 50, 50), glassImage)
+        super(new Rect(0, 0, 50, 50), glassImage);
         this._turn = game.turn;
         this._meme = meme;
-        this._cnt = 0;
     }
     update() {
         if (game.turn == 2 + this._turn) {
@@ -750,60 +749,69 @@ class Meme extends Sprite {
         this._vecY = 0;
         this._myMeme = myMeme;
         this._initcnt = 0;
-        this._speed = 2;
         this._cnt = 0;
-        this._go = false;
-        this._atk = false;
-        this._dfn = false;
-        this._spDfn = false;
-        this._wairo = false;
-        this._angle = 0;
-        this._away = false;
+        this._speed = 2;
         this._awayX = Math.random() * 900;
+        this._go = false;
+        this._mode = "";
+        this._away = false;
+        this._reciveWairo = false;
+        this._angle = 0;
+        this._reset();
     }
-    atk(success = false) {
+    _reset() {
+        this._go = false;
+        this._mode = "";
+        this._away = false;
+    }
+    atk(success) { // away時に削除
+        this._reset();
         this._go = true;
-        this._atk = success;
+        this._mode = "atk";
         this._away = !success;
     }
-    dfn(success = false) {
+    dfn(success) {
+        this._reset();
         this._go = true;
-        this._dfn = true;
         this._away = !success;
-        this.texture = new Texture(new Rect(0, 0, 64, 64), assets.kushon);
         setTimeout(() => {
             this._dfn = false;
             this.texture = new Texture(new Rect(0, 0, 64, 64), assets.meme);
         }, 4000);
+        this.texture = new Texture(new Rect(0, 0, 64, 64), assets.kushon);
     }
-    dxAtk(success) {
-        console.log(this.w, this.h);
+    dxAtk(success) { // 画像拡大するだけ
         this.w = 300;
         this.h = 300;
         this.x -= 50;
         this.y -= 50;
         this.atk(success);
     }
-    reciveWairo() {
-        this._wairo = true;
+    reciveWairo() { // チーム入れ替えるだけ
+        this._reciveWairo = true;
         this._myMeme = !this._myMeme;
     }
-    wairo() {
-        this._spawn(new GameEvent(new WairoBanana(this)));
+    wairo() { // ばなな生成するだけ。　バナナ側から削除
+        this._reset();
+        this._spawn(new WairoBanana(this));
         this._go = true;
     }
-    heso(success) {
-        this._spawn(new GameEvent(new HesoBanana(new Rect(this.x + 50, this.y + 50, 100, 100), this._myMeme)));
+    heso() { // バナナ生成して away時に削除
+        this._reset();
+        this._spawn(new HesoBanana(new Rect(this.x + 50, this.y + 50, 100, 100), this._myMeme));
         this._away = true;
+        this._mode = "heso";
     }
-    spy(success) {
+    spy() { // サングラス生成 サングラス側から削除
+        this._reset();　
         this._spawn(new Glass(this));
         this._go = true;
         this._myMeme = !this._myMeme;
     }
-    spDfn(success) {
-        this._spDfn = true;
-        this.dfn(success);
+    spDfn(success) { // 自分で削除
+        this._reset();
+        this._go = true;
+        this._away = !success
         this.texture = new Texture(new Rect(0, 0, 64, 64), assets.spkushon);
         setTimeout(() => {
             this._destroy();
@@ -843,7 +851,7 @@ class Meme extends Sprite {
             this.x -= this._speed;
             return
         }
-        if (this._go > 0) {
+        if (this._go) {
             this.gotoCenter();
             this._cnt++;
             if (this._cnt == 30) {
@@ -852,37 +860,41 @@ class Meme extends Sprite {
             }
             return;
         }
-        if (this._wairo) {
-            this._wairo = false;
-            this._atk = false;
-            this._dfn = false;
+        
+        if (this._reciveWairo) {
+            this._reciveWairo = false;
+            this._mode = "";
             this._away = false;
             return;
         }
-        if (this._away > 0) {
+        if (this._away) {
             this.gotoAway(this._myMeme);
-            this._angle += 10
+            this._angle += 10;
             this._cnt++;
             if (this._cnt == 30) {
-                this._away = false;
                 this._cnt = 0;
-                this._angle = 0;
-                if (!this._dfn) {
+                if (this._mode == "atk" || this._mode == "heso") {
                     this._destroy();
+                } else {
+                    this._reset();
+                    this._angle = 0;
+                    this._cnt = 0;
                 }
             }
             return;
         }
-        if (this._atk) {
+        
+        if (this._mode == "atk") {
             this.gotoBanana(!this._myMeme);
             this._cnt++;
             if (this._cnt == 30) {
                 this._destroy();
-                this._atk = false;
+                this._reset();
                 this._cnt = 0;
             }
             return;
         }
+
         if (Math.random() * 30 < 1) {
             this._vecX = Math.floor(Math.random() * 3) - 1;
             this._vecY = Math.floor(Math.random() * 3) - 1;

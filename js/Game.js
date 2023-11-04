@@ -48,11 +48,11 @@ class Player {
             this.meme[0].atk(data.success);
             if (data.wairo) {
                 this.meme[0].reciveWairo();
-            }
-            if (game.player != this) {
-                game.player.meme.push(this.meme[0]);
-            } else {
-                game.enemy.meme.push(this.meme[0]);
+                if (game.player != this) {
+                    game.player.meme.push(this.meme[0]);
+                } else {
+                    game.enemy.meme.push(this.meme[0]);
+                }
             }
             this.meme.splice(0, 1);
         }
@@ -61,39 +61,38 @@ class Player {
         this.meme[0].dxAtk(data.success);
         if (data.wairo) {
             this.meme[0].reciveWairo();
-        }
-        if (game.player != this) {
-            game.player.meme.push(this.meme[0]);
-        } else {
-            game.enemy.meme.push(this.meme[0]);
+            if (game.player != this) {
+                game.player.meme.push(this.meme[0]);
+            } else {
+                game.enemy.meme.push(this.meme[0]);
+            }
         }
         this.meme.splice(0, 1);
     }
     dfn(data) {
         this.meme[0].dfn(data.success);
     }
+    spDfn(data) {
+        this.meme[0].spDfn(data.success);
+        this.meme.splice(0, 1);
+    }
     heso(data) {
         for (let i=0; i < 2; i++){
-            this.meme[0].heso(data.success);
+            this.meme[0].heso();
             this.meme.splice(0, 1);
         }
     }
-    damage(n) {
-        for (let i=1; i <= n; i++) {
-            this.banana[this.banana.length-i].damage();
-        }   
-    }
-
     spy(data) {
-        this.meme[0].spy(data.success);
+        this.meme[0].spy();
         this.meme.splice(0, 1);
     }
     wairo(data) {
         this.meme[0].wairo();
         this.meme.splice(0, 1);
     }
-    spDfn(data) {
-        this.meme[0].spDfn(data.success);
-        this.meme.splice(0, 1);
+    damage(n) {
+        for (let i=1; i <= n; i++) {
+            this.banana[this.banana.length-i].damage();
+        }   
     }
 }
