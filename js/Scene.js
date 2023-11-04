@@ -789,15 +789,15 @@ class Meme extends Sprite {
         this._myMeme = !this._myMeme;
     }
     wairo() {
-        this.dispatchEvent("spawn", new GameEvent(new WairoBanana(this)));
+        this._spawn(new GameEvent(new WairoBanana(this)));
         this._go = true;
     }
     heso(success) {
-        this.dispatchEvent("spawn", new GameEvent(new HesoBanana(new Rect(this.x + 50, this.y + 50, 100, 100), this._myMeme)));
+        this._spawn(new GameEvent(new HesoBanana(new Rect(this.x + 50, this.y + 50, 100, 100), this._myMeme)));
         this._away = true;
     }
     spy(success) {
-        this.dispatchEvent("spawn", new GameEvent(new Glass(this)));
+        this._spawn(new Glass(this));
         this._go = true;
         this._myMeme = !this._myMeme;
     }
@@ -868,7 +868,7 @@ class Meme extends Sprite {
                 this._cnt = 0;
                 this._angle = 0;
                 if (!this._dfn) {
-                    this.dispatchEvent("destroy", new GameEvent(this));
+                    this._destroy();
                 }
             }
             return;
@@ -877,7 +877,7 @@ class Meme extends Sprite {
             this.gotoBanana(!this._myMeme);
             this._cnt++;
             if (this._cnt == 30) {
-                this.dispatchEvent("destroy", new GameEvent(this));
+                this._destroy();
                 this._atk = false;
                 this._cnt = 0;
             }
