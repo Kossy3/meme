@@ -5,7 +5,7 @@ let assets;
 let screen;
 const bgm = new BGM();
 
-const socket = io.connect("https://memeserver.kossy3.repl.co/", { withCredentials: true });
+const socket = io.connect("https://memeserver.kossy3.repl.co/dev", { withCredentials: true });
 
 
 window.onload = () => {
