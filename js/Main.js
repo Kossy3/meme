@@ -4,8 +4,10 @@ const game = new Game();
 let assets;
 let screen;
 const bgm = new BGM();
+const host = "https://memeserver-rxaz.onrender.com" // "http://127.0.0.1:3000";
 
-const socket = io.connect("https://memeserver.kossy3.repl.co/dev", { withCredentials: true });
+
+const socket = io.connect(`${host}/`, { withCredentials: true });
 
 
 window.onload = () => {
@@ -16,7 +18,7 @@ window.onload = () => {
     });
     socket.on('login', (id) => {
         game.id = id;
-        fetch(`https://memeserver.kossy3.repl.co/sess`, {
+        fetch(`${host}/sess`, {
             method: "POST",
             credentials: 'include',
             headers: {
