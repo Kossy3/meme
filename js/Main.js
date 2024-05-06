@@ -4,7 +4,8 @@ const game = new Game();
 let assets;
 let screen;
 const bgm = new BGM();
-const host = "https://memeserver-rxaz.onrender.com" // "http://127.0.0.1:3000";
+// const host =  "http://127.0.0.1:3000"; 
+const host = "https://memeserver-rxaz.onrender.com";
 
 
 const socket = io.connect(`${host}/`, { withCredentials: true });
@@ -36,7 +37,10 @@ window.onload = () => {
     });
     socket.on('error', (msg) => {
         console.error(msg);
-        alert("Error: " + msg);
+        console.log("Error: " + msg);
+        if (msg == "login failed") {
+            alert("ログインに失敗しました。リロードします。")
+        }
     });
     socket.on('invite', (id) => {
         if (game.inviting && id != game.id) {
@@ -81,7 +85,7 @@ window.onload = () => {
     });
     socket.on("result", (data) => {
         game.selecting = false;
-        console.log(data);
+        console.log("result", data);
         if (data.end) {
             game.playing = false;
             game.inviting = false;
