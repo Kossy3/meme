@@ -5,7 +5,7 @@ let assets;
 let screen;
 const bgm = new BGM();
 // const host =  "http://127.0.0.1:3000"; 
-const host = "https://memeserver-rxaz.onrender.com";
+const host = "https://memeserver-nwnr.onrender.com/";
 
 
 const socket = io.connect(`${host}/`, { withCredentials: true });
